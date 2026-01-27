@@ -31,7 +31,7 @@ This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded wit
 If you have seen the sand falling algorithm my algorithm is like that. The code scans from low to high and check if there is a particle 
 1. If there is a particle at coordinate (x,y) the particle move to (x,y-1) if there is no particle below like this picture
 
-![sand_simulation](sand_simulation.webp){width=300px}
+![sand_simulation](sand_simulation.webp)
 
 Then when it meets other particle it will have 2 option to go left or right so the coordinate will be (x-1,y-1) or (x+1,y-1). Else it will stay the 
 
