@@ -1,5 +1,5 @@
 # Digital Hourglass using STM32F103C8T6
-This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded 
+This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded with State machine, Time-sliced task and Superloop 
 
 ## Materials in this project 
 **1.MCU** :STM32F103C8T6 
@@ -25,6 +25,13 @@ This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded
 ` line. If you use the authentic MPU6050, you should change 112 to 0x68. (And if not, check the   
 
 ## How it works 
+
+### First: I have to give you a brief logic of my code 
+
+This project arrange the matrices with the right picture order. So to make the calculation easier i rotate the matrices 45 degrees counter clockwise and have the left picture. And the gravity now according to the order has the vector (1,-1) . Follow that logic the gravity in the state 90 degrees is (1,1) and so on. 
+
+![Image](principle_matrix.jfif)
+
 
 The system operates based on a non-blocking loop (using `HAL_GetTick`) to simulate sand physics in real-time:
 
