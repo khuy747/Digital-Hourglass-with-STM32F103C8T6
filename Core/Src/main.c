@@ -58,33 +58,30 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define dev_num 2 //so luong led ma tran
-#define droptime 1000 //Thời gian xuất hiện led
-#define readtime 200 // Thời gian đọc MPU
+#define dev_num 2 //number of led matrices
+#define droptime 1000 //The time that spawn a led
+#define readtime 200 // the time of reading MPU data
 
 
-uint8_t display_buffer[16]={0}; //Su dung cho viec latch data tu world thanh 1 cum 8bit va luu vao day
-
-/*----------Khởi tạo ma trận world 16x16 để chứa data làm việc với 0,1-----------------*/
-uint8_t world[16][16];
+uint8_t display_buffer[16]={0}; //this buffer is used to store the data will be flushed out
+uint8_t world[16][16]; //this matrix is for the data to store and calculate
 
 double Ax, Ay;
 MPU6050_t MPU6050;
 
-//ghi trạng thái hiện tại vào ma trận này !!
 
-/*---------Hàm send data sơ cấp nhất để sử dụng cho gửi hàm Init đỡ rối------------*/
+/*---------the primary send data used for Init command of the MAX7219------------*/
 
 void MAX7219_Send(uint8_t add, uint8_t data) {
 	uint16_t writeData = (add<<8)|data;
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET); // Kéo CS xuống
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET); // pull down the CS for the data incoming
     for (int i=0; i<dev_num; i++){
 	HAL_SPI_Transmit(&hspi1, (uint8_t *)&writeData, 1, 100);
     }// Vì có 2 led ma trận nên khởi tạo 2 lần
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);   // Kéo CS lên
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);// pull up the CS pin for the data to be locked
 }
 
-/* ----Hàm send data theo row và binary và phân chia ra từ 1-8 là của led 1, 9-16 là của led 2------*/
+/* ----This function is for the sake of the visualization the bit to move ------*/
 
 
 int max_write (int row, uint8_t data)
@@ -94,18 +91,16 @@ int max_write (int row, uint8_t data)
 	uint16_t writeData = 0;
 	HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);  // Select the slave
 	for (int dev = 0; dev < dev_num; dev++)   // for loop for all the max connected
-		// vif cos 2 thiet bi nen loop toi khi nao thoa man thi thoi
 	{
 		if (dev == devTarget)  // if this the target
 		{
 			writeData = ((row - offset)<<8)|data;
-			// truyền dữ liệu tới dòng thứ row nếu đếm theo logic...
-			//Cụ thể thì ở đây dùng để shift bit của dòng cần truyền và data cho chung 1 thể
 			HAL_SPI_Transmit(&hspi1, (uint8_t *)&writeData, 1, 1000);
 		}
 		else
 		{
-			writeData = 0;  // send dữ liệu NO-OP để daisy chain
+			writeData = 0;  // because 2 led matrices are daisy chained so we have to send
+			//the NO-OP data for the matrix we dont want it to operate to that data
 			HAL_SPI_Transmit(&hspi1, (uint8_t *)&writeData, 1, 1000);
 		}
 	}
@@ -114,16 +109,16 @@ int max_write (int row, uint8_t data)
 }
 
 
-/*Khởi tạo 2 ma trận*/
+/*Initialize 2 matrices*/
 void MAX7219_Init(uint8_t intensity) {
-    HAL_Delay(100); // chờ tí cho an toàn
+    HAL_Delay(100); // this command is optional
     MAX7219_Send(0x0C, 0x01); // Wake up
-    MAX7219_Send(0x0F, 0x00); // Tắt Test mode
+    MAX7219_Send(0x0F, 0x00); // turn off the test mode
     MAX7219_Send(0x09, 0x00); // No decode
-    MAX7219_Send(0x0B, 0x07); // Scan đủ 8 hàng
-    MAX7219_Send(0x0A, intensity); // Độ sáng
+    MAX7219_Send(0x0B, 0x07); // Scan 8 rows
+    MAX7219_Send(0x0A, intensity);
 
-    // Xóa rác màn hình khi bật nguồn
+    // clear 2 matrices when operate
     for(int i = 1; i <= 8; i++) {
           MAX7219_Send(i, 0x00);
       }
@@ -132,34 +127,31 @@ void MAX7219_Init(uint8_t intensity) {
 
 
 
-/* ----------Tạo hàm nhận angle để nhận trạng thái---------------- */
+/* ----------This function is for the getting state from the raw data from the MPU6050 ------------ */
 int get_orientation_state(double Ay, double Ax) {
-    // 1. Trạng thái THẲNG (0 độ hoặc 360 độ)
+    // This is for the up mode
     if (Ay<0&&Ax>=0) {
         return 0;
     }
 
-    // 2. Trạng thái NGHIÊNG PHẢI (90 độ)
+    // turn right 90 degrees
     else if (Ay>=0 &&Ax>=0) {
         return 1;
     }
 
-    // 3. Trạng thái CHỔNG NGƯỢC (180 độ)
+    // turn 180 degrees or upside down
     else if (Ay>=0&&Ax<0) {
         return 2;
     }
 
-    // 4. Trạng thái NGHIÊNG TRÁI (270 độ) - Trường hợp còn lại
+    // the turn lef 90 degrees
     else {
         return 3;
     }
 }
 
 
-/*-----------Tạo hàm tạo điểm led (nguồn cát) ------------*/
-/*-----------Taoj hàm quét xem led nào ở "trên mặt" để bỏ 1 trong các led đó */
-//Ta gộp chung lại vì sau đó ta có hàm update nên là không bị vấn đề gì. Ta sẽ tạo 1 source ở 8,7 khi 0 độ
-//và sẽ có 1 sink ở 7,8 mất 1 led cùng lúc với tạo led tạo ra hiệu ứng rơi đồng hồ cát.
+/*------This function is for taking 1 bit from the upper matrix and then spawn 1 in the lower -------*/
 
 void source_sink(int state){
 	int sink_x, sink_y;
@@ -177,8 +169,7 @@ void source_sink(int state){
 	else{
 		return;
 	}
-	//Nếu như ở 7,8 có đèn và ở 8,7 trống thì mình spawn led! và xóa led cũ đi
-if (world[sink_x][sink_y] == 1 && world[source_x][source_y] == 0) {
+	if (world[sink_x][sink_y] == 1 && world[source_x][source_y] == 0) {
 
         world[sink_x][sink_y] = 0;
         world[source_x][source_y] = 1;
@@ -186,13 +177,14 @@ if (world[sink_x][sink_y] == 1 && world[source_x][source_y] == 0) {
 }
 
 
-/*-------Hàm latch data từ 16x16 ra 1 byte 8bit chứa trạng thái-------------*/
+/*---This function will take the data from world and then latch it into
+ *  1 byte which contains the state of every led in that row-------------*/
 
 void pack_data(void){
 	for(int i=0; i<16; i++) display_buffer[i]=0;
 
 	for(int y=0; y<16; y++){
-		int col=(y<8)?8:0; //if y<8 thì start col =8. y từ 8 đến 15 thì start col =0
+		int col=(y<8)?8:0;
 		for (int x=0; x<8; x++){
 			if (world[col+x][y]==1){
 				display_buffer[y]|=(1<<(x));
@@ -201,24 +193,9 @@ void pack_data(void){
 	}
 
 }
-/*---------Sử dụng cho việc lấy data ra 1 ma trận khác để tránh xung đô--------------*/
-void copy_world(void) {
-    for (int x = 0; x < 16; x++) {
-        for (int y = 0; y < 16; y++) {
-            world_next[x][y] = world[x][y];
-        }
-    }
-}
 
-
-void swap_world(void){
-	for (int x = 0; x < 16; x++) {
-	        for (int y = 0; y < 16; y++) {
-	            world[x][y] = world_next[x][y];
-	        }
-	    }
-}
-/*----------Tạo hàm DISPLAY đẩy hết data được cập nhật mỗi lần ở world ra-------------*/
+/*----------This function will take the data we have packed in the previous func
+ *  to latch it out MAX7219-------------*/
 
 void flush_to_max7219(void){
 	for(int row=0; row<16; row++){
@@ -227,25 +204,24 @@ void flush_to_max7219(void){
 }
 
 
-/*------------Tạo biên giới để hạt cát biết điểm dừng------------*/
+/*------
+ * Func: Making the boudary for every state------------*/
+
 
 bool check_inbound(int x, int y) {
     if (x < 0 || x > 15 || y < 0 || y > 15) return false;
 
-    // Bình trên trái
     if (x >= 0 && x <= 7 && y >= 8 && y <= 15) return true;
 
-    // Bình dưới phải
     if (x >= 8 && x <= 15 && y >= 0 && y <= 7) return true;
 
-    return false; // Còn lại là tường
+    return false;
 }
 
 bool check_inbound_state0upper(int x, int y) // =state2below
 {
 		if (x < 0 || x > 15 || y < 0 || y > 15) return false;
 
-	    // Bình dưới phải
 	    if (x>=0&& x<=7&&y>=8&&y<=15) return true;
 	    return false;
 }
@@ -253,45 +229,39 @@ bool check_inbound_state0below(int x, int y) // =state2upper
 {
 		if (x < 0 || x > 15 || y < 0 || y > 15) return false;
 
-	    // Bình trên trái
 	    if (x>=8&& x<=15&&y>=0&&y<=7) return true;
 	    return false;
 }
 
-//desired result: state0 thì có inbound trên là mặt trên: state2 thì là mặt dưới
-
-//--> cái state quyết định inbound
+//desired result: state0 will have the boundary of the upper matrix state2 will be lower
 
 
-
-/*-------------Tạo hàm để check xem hạt có thể di chuyển tiếp hay không-------------*/
+/*-------------Func: To check if the led can move or not-------------*/
 bool can_move_to(int tx, int ty) {
-    if (!check_inbound(tx, ty)) return false; // Đụng tường/Biên
-    if (world[tx][ty] == 1) return false;     // Đụng hạt cát khác
+    if (!check_inbound(tx, ty)) return false; // boundary
+    if (world[tx][ty] == 1) return false;     // another led
     return true;
 }
 
 bool can_move_to_state0upper(int tx, int ty) //=can_move_to_state2below
 {
-    if (!check_inbound_state0upper(tx, ty)) return false; // Đụng tường/Biên
-    if (world[tx][ty] == 1) return false;     // Đụng hạt cát khác
+    if (!check_inbound_state0upper(tx, ty)) return false;
+    if (world[tx][ty] == 1) return false;
     return true;
 }
 bool can_move_to_state0below(int tx, int ty) //=can_move_to_state2upper
 {
-    if (!check_inbound_state0below(tx, ty)) return false; // Đụng tường/Biên
-    if (world[tx][ty] == 1) return false;     // Đụng hạt cát khác
+    if (!check_inbound_state0below(tx, ty)) return false;
+    if (world[tx][ty] == 1) return false;
     return true;
 }
 
-//--> tạo ra thêm 2 cái inbound từ đó ra được 2 cái move mới dành cho 2 trường hợp state=0 và 2
-
-/*-----------Tạo hàm rơi 1 hạt cát ở điểm x,y theo từng trườnghợp xoay 1 góc bao nhiêu------------*/
-// 1. Hướng đi thẳng (Forward)
+/*-----------Func: Define the gravity of each state------------*/
+// 1.  (Forward)
 int8_t fwdX, fwdY;
-// 2. Hướng trượt sang trái (Left)
+// 2. (Left)
 int8_t leftX, leftY;
-// 3. Hướng trượt sang phải (Right)
+// 3. (Right)
 int8_t rightX, rightY;
 void set_gravity_by_state(int state) {
     switch (state) {
@@ -307,9 +277,9 @@ void set_gravity_by_state(int state) {
         case 1:
             fwdX = 1; fwdY = 1;
 
-            leftX = 1; leftY = 0;  // Trượt sang trái
+            leftX = 1; leftY = 0;
 
-            rightX = 0; rightY = 11; // Trượt lên trên
+            rightX = 0; rightY = 1;
             break;
 
         case 2:
@@ -330,19 +300,19 @@ void set_gravity_by_state(int state) {
     }
 }
 
-/*------------Tạo hàm để check bên trái và bên phải và phía dưới--------------------*/
+/*------------Func: Move the particle at the coordinate (x,y) --------------------*/
 void move_particle(int x, int y){
-	if (world[x][y] == 0) return; //không có cát thì không di chuyển cái này
-	//Đi thẳng
+	if (world[x][y] == 0) return;
+	//go forward
 	int next_x = x + fwdX;
 	int next_y = y + fwdY;
-	//Đi trái
+	//left
 	int lX= x+leftX;
 	int lY= y+leftY;
-	//Đi phải
+	//right
 	int rX= x+rightX;
 	int rY= y+rightY;
-	if(can_move_to(next_x,next_y)) //Đi thẳng
+	if(can_move_to(next_x,next_y))
 	{
 		world[x][y] = 0;
 		world[next_x][next_y] = 1;
@@ -353,7 +323,7 @@ void move_particle(int x, int y){
 	bool can_right = can_move_to(rX, rY);
 
 	    if (can_left && can_right) {
-	        // Cả 2 bên đều thoáng -> Random chọn 1
+	        // make the random decision to make the sandclock more logical
 	        if (rand() % 2 == 0) {
 	            world[x][y] = 0; world[lX][lY] = 1;
 	        } else {
@@ -361,41 +331,29 @@ void move_particle(int x, int y){
 	        }
 	    }
 	    else if (can_left) {
-	        // Chỉ bên trái thoáng
 	        world[x][y] = 0; world[lX][lY] = 1;
 	    }
 	    else if (can_right) {
-	        // Chỉ bên phải thoáng
 	        world[x][y] = 0; world[rX][rY] = 1;
 	    }
 	    else{return;}
-	//Đứng yên
 }
 
-//Dùng cho state0 mặt trên để nó không chảy lố
+//Func: also move the led but the upper matrix when we are at state 0 will not overflow to the lower
+//matrix. If we dont have this func, the led will flow out of control to the lower matrix when we finish every frame
 void move_particle_state0upper(int x, int y) //=state2below
 {
-	if (world[x][y] == 0) return; //không có cát thì không di chuyển cái này
-	//Đi thẳng
-
-	//Đi trái
+	if (world[x][y] == 0) return;
 	int lX= x+leftX;
 	int lY= y+leftY;
-	//Đi phải
+
 	int rX= x+rightX;
 	int rY= y+rightY;
-	/*if(can_move_to(next_x,next_y)) //Đi thẳng
-	{
-		world[x][y] = 0;
-		world[next_x][next_y] = 1;
-		return;
-	}*/
 
 	bool can_left  = can_move_to_state0upper(lX, lY);
 	bool can_right = can_move_to_state0upper(rX, rY);
 
 	    if (can_left && can_right) {
-	        // Cả 2 bên đều thoáng -> Random chọn 1
 	        if (rand() % 2 == 0) {
 	            world[x][y] = 0; world[lX][lY] = 1;
 	        } else {
@@ -403,72 +361,58 @@ void move_particle_state0upper(int x, int y) //=state2below
 	        }
 	    }
 	    else if (can_left) {
-	        // Chỉ bên trái thoáng
 	        world[x][y] = 0; world[lX][lY] = 1;
 	    }
 	    else if (can_right) {
-	        // Chỉ bên phải thoáng
 	        world[x][y] = 0; world[rX][rY] = 1;
 	    }
 	    else{return;}
-	//Đứng yên
 }
 
 
 void move_particle_state2upper(int x, int y) //=state2below
 {
-	if (world[x][y] == 0) return; //không có cát thì không di chuyển cái này
-	//Đi thẳng
-
-	//Đi trái
+	if (world[x][y] == 0) return;
 	int lX= x+leftX;
 	int lY= y+leftY;
-	//Đi phải
+
 	int rX= x+rightX;
 	int rY= y+rightY;
-	/*if(can_move_to(next_x,next_y)) //Đi thẳng
-	{
-		world[x][y] = 0;
-		world[next_x][next_y] = 1;
-		return;
-	}*/
 
 	bool can_left  = can_move_to_state0below(lX, lY);
 	bool can_right = can_move_to_state0below(rX, rY);
 
 	    if (can_left && can_right) {
-	        // Cả 2 bên đều thoáng -> Random chọn 1
-	        if (rand() % 2 == 0) {
+
+	    	if (rand() % 2 == 0) {
 	            world[x][y] = 0; world[lX][lY] = 1;
 	        } else {
 	            world[x][y] = 0; world[rX][rY] = 1;
 	        }
 	    }
 	    else if (can_left) {
-	        // Chỉ bên trái thoáng
-	        world[x][y] = 0; world[lX][lY] = 1;
+
+	    	world[x][y] = 0; world[lX][lY] = 1;
 	    }
 	    else if (can_right) {
-	        // Chỉ bên phải thoáng
-	        world[x][y] = 0; world[rX][rY] = 1;
+
+	    	world[x][y] = 0; world[rX][rY] = 1;
 	    }
 	    else{return;}
-	//Đứng yên
 }
 
 void move_particle_state0below(int x, int y) //=state2 upper
 {
-	if (world[x][y] == 0) return; //không có cát thì không di chuyển cái này
-	//Đi thẳng
+	if (world[x][y] == 0) return;
 	int next_x = x + fwdX;
 	int next_y = y + fwdY;
-	//Đi trái
+
 	int lX= x+leftX;
 	int lY= y+leftY;
-	//Đi phải
+
 	int rX= x+rightX;
 	int rY= y+rightY;
-	if(can_move_to(next_x,next_y)) //Đi thẳng
+	if(can_move_to(next_x,next_y))
 	{
 		world[x][y] = 0;
 		world[next_x][next_y] = 1;
@@ -479,7 +423,7 @@ void move_particle_state0below(int x, int y) //=state2 upper
 	bool can_right = can_move_to_state0below(rX, rY);
 
 	    if (can_left && can_right) {
-	        // Cả 2 bên đều thoáng -> Random chọn 1
+
 	        if (rand() % 2 == 0) {
 	            world[x][y] = 0; world[lX][lY] = 1;
 	        } else {
@@ -487,29 +431,30 @@ void move_particle_state0below(int x, int y) //=state2 upper
 	        }
 	    }
 	    else if (can_left) {
-	        // Chỉ bên trái thoáng
+
 	        world[x][y] = 0; world[lX][lY] = 1;
 	    }
 	    else if (can_right) {
-	        // Chỉ bên phải thoáng
+
 	        world[x][y] = 0; world[rX][rY] = 1;
 	    }
 	    else{return;}
-	//Đứng yên
+
 }
 void move_particle_state2below(int x, int y) //=state2 upper
 {
-	if (world[x][y] == 0) return; //không có cát thì không di chuyển cái này
-	//Đi thẳng
+	if (world[x][y] == 0) return;
+
 	int next_x = x + fwdX;
 	int next_y = y + fwdY;
-	//Đi trái
+
 	int lX= x+leftX;
 	int lY= y+leftY;
-	//Đi phải
+
 	int rX= x+rightX;
 	int rY= y+rightY;
-	if(can_move_to(next_x,next_y)) //Đi thẳng
+	if(can_move_to(next_x,next_y))
+
 	{
 		world[x][y] = 0;
 		world[next_x][next_y] = 1;
@@ -520,7 +465,7 @@ void move_particle_state2below(int x, int y) //=state2 upper
 	bool can_right = can_move_to_state0upper(rX, rY);
 
 	    if (can_left && can_right) {
-	        // Cả 2 bên đều thoáng -> Random chọn 1
+
 	        if (rand() % 2 == 0) {
 	            world[x][y] = 0; world[lX][lY] = 1;
 	        } else {
@@ -528,47 +473,39 @@ void move_particle_state2below(int x, int y) //=state2 upper
 	        }
 	    }
 	    else if (can_left) {
-	        // Chỉ bên trái thoáng
+
 	        world[x][y] = 0; world[lX][lY] = 1;
 	    }
 	    else if (can_right) {
-	        // Chỉ bên phải thoáng
+
 	        world[x][y] = 0; world[rX][rY] = 1;
 	    }
 	    else{return;}
 	//Đứng yên
 }
 
-/*----------Taọ hàm update world -------------*/
-/*----------Tạo hàm scan qua các điểm để xem là có led hay không 	-------------*/
-/*	---------------------------
- * |							|. Cát rơi down --> quét từ dưới lên trên và phải sang trái
- * |							| 		   up --> quét từ trên xuống dưới và từ trái sang phải
- * |							|			rơi phải: quét từ dưới lên và trái sang phải
- * |							|			rơi trái: từ trên xuống và phải sang
- * |							|
- * |							|
- * |							|							|
- *   ---------------------------
+/*
+ * Func: Scan the matrices and move the particle with the logic
  * */
+
+//We have the difference with the state 0 and state 2 because i already explain the reason in the boundary func
+
+//state0: scan the area that dont have led to the area that have led
+//every state has the same logic to prevent the line effect when update
 void Update_State_0_Down(void) {
 
 
     for (int y = 0; y <= 7; y++) {
         for (int x = 15; x >= 8; x--) {
-            move_particle_state0below(x, y); //quét ở dưới để tránh lấy phần tử ở trên
+            move_particle_state0below(x, y);
         }
     }
     for (int y = 8; y <= 15; y++) {
         for (int x = 7; x >= 0; x--) {
-           move_particle_state0upper(x, y); //quét ở trên tránh nhầm ở dưới
+           move_particle_state0upper(x, y);
          }
      }
 }
-//Cần tạo thêm 1 hàm update state 0 mặt trên. Có boundary khác bình thường
-//--> Tạo thêm hàm move_particle có boundary khác!
-
-//Nếu update cái này thì hàm pạck_data liệu có còn lưu như bình thường?
 
 void Update_State_2_Up(void) {
 
@@ -600,11 +537,7 @@ void Update_State_3_Left(void) {
     }
 }
 
-//Nên dựa vào state để scan
-//Nếu state==0 thì cát rơi từ trên xuống nên là quét từ dưới lên trên
-//state==1 thì scan từ phải sang trái
-//state==2 từ trên xuống dưới
-//state==3 từ trái sang phải
+//Choose the logic depends on state
 void Update_World(int state) {
     switch (state) {
         case 0:
@@ -620,28 +553,12 @@ void Update_World(int state) {
             Update_State_3_Left();
             break;
         default:
-            Update_State_0_Down(); // Mặc định
+            Update_State_0_Down();
             break;
     }
 }
-//Nói scan cho sang chứ bản chất là hàm for !
 
 
-
-/*----Hàm thực hiện dịch bit của ma trận world-----*/
-
-
-/*---------Luuư đồ hoạt động thì input vẫn là MPU6050--> Từ đây quyết định state
- * --> Từ state thì quyết định ra tới các hướng led di chuyển cũng scan như nào
- * --> Từ đó ta có thể thao tác từng bước lên ma trận 16x16 đã có trong world
- * --> Cuối cùng thì ta bốc hết các dữ liệu đó và latch ra ngoài là hoàn thành! */
-
-
-
-/*Thêm hàm lấy MPU vào, thêm thư viện vào--> Thay các angle thành KalmanAngle.
- * Ngoai ra ta cần thêm 1 thời gian chờ ổn định của MPU để kết quả lấy đưuojc không bị lệch
- * Timf các khoảng của MPU để tích hợp vào
- * */
 
 
 /* USER CODE END 0 */
@@ -678,50 +595,44 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-MAX7219_Init(0x05);
-while (MPU6050_Init(&hi2c1) == 1);
+  MAX7219_Init(0x05);
+  while (MPU6050_Init(&hi2c1) == 1);
 
-MPU6050_Read_All(&hi2c1, &MPU6050);
+  MPU6050_Read_All(&hi2c1, &MPU6050);
 
-Ax= MPU6050.Ax;
-Ay= MPU6050.Ay;
+  Ax= MPU6050.Ax;
+  Ay= MPU6050.Ay;
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-//đổ đầy led đầu
-for (int x = 0; x <= 6; x++) {
+ //fill the upper led
+  for (int x = 0; x <= 6; x++) {
       for (int y = 8; y <= 15; y++) {
           world[x][y] = 1;
       }
   }
 
-int current_state = 0;
-// Khởi tạo biến thời gian
+  int current_state = 0;
+  // Because we dont want the MPU6050 to shutdown when transfer data so we use GetTick func
   uint32_t last_mpu_time = 0;
   uint32_t last_physics_time = 0;
   uint32_t last_flow_time = 0;
   while (1)
   {
 
-	  uint32_t current_time = HAL_GetTick(); // Lấy thời gian hiện tại (tính bằng ms)
+	  uint32_t current_time = HAL_GetTick();
 
-	        // Đọc cảm biến
 	        if (current_time - last_mpu_time >= readtime) {
 
-	            MPU6050_Read_All(&hi2c1, &MPU6050); // Đọc giá trị mới nhất
-	            Ax = MPU6050.Ax;
-	            Ay = MPU6050.Ay;
-
-	            // Cập nhật hướng trọng lực
 	            current_state = get_orientation_state(Ay, Ax);
 	            set_gravity_by_state(current_state);
 
 	            last_mpu_time = current_time;
 	        }
 
-	        // Tốc độ rơi của hạt cát
+	        // the time for the particle to move 1 step
 	        if (current_time - last_physics_time >= 100) {
 
 	            Update_World(current_state);
@@ -731,7 +642,7 @@ int current_state = 0;
 	            last_physics_time = current_time;
 	        }
 
-	        // Tương đương HAL_Delay(1000) của bạn, điều chỉnh tốc độ xuất hiện hạt cát
+	        // spawn led time
 	        if (current_time - last_flow_time >= droptime) {
 
 	            source_sink(current_state);
