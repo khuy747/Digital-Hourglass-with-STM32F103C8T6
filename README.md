@@ -59,10 +59,8 @@ The system operates based on a non-blocking loop (using `HAL_GetTick`) to simula
 
 `Schematic`: The way i connect all the material 
 
-
 ## Demo run 
-
-![](Demo_Video.mp4)
+![Video](Demo_Video.mp4)
 
 ## How to use? 
 1. Clone this repo
