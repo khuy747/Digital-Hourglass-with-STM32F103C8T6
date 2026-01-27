@@ -59,11 +59,11 @@ The system operates based on a non-blocking loop (using `HAL_GetTick`) to simula
 
 `Schematic`: The way i connect all the material 
 
-## Demo run 
-![Video](Demo_Video.mp4)
 
 ## How to use? 
 1. Clone this repo
 2. Open STM32CubeIDE and click **File>Import**
 3. Check the configuration in the `.ioc` file
 4. Compile and run
+
+## Demo run is the video 
