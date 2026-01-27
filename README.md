@@ -4,11 +4,11 @@ This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded
 ## Materials in this project 
 **MCU** :STM32F103C8T6 
 
-**Sensor** :MPU6050 
+**Sensor** :MPU6050 [Register map](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf) 
 
-**Display** : 2 LED Matrices with the module of IC MAX7219 
+**Display** : 2 LED Matrices with the module of IC MAX7219 (Use this [Datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/max7219-max7221.pdf) to know how the IC MAX7219 works. It needs a "No-operation data" to use the cascade mode, like when you cascade 2 matrices and you want to only communicate with the second one but not the first, you need to send the No-op data to the first matrix )
 
-**Power** : 1 cell of Li-on battery with capacity 2000mAh with 3,7V and Boost circuit combined with charging circuit 
+**Power** : 1 cell of Li-on battery with capacity 2000mAh with 3,7V and Boost circuit combined with charging circuit [Schematic](https://i.pinimg.com/736x/7d/34/64/7d3464c19563e37884a307127ac778dd.jpg) 
 
 > [!IMPORTANT]
 > My project has the their own way to display MPU6050 so make sure to change the direction in the `int get_orientation_state(double Ay, double Ax)` by measuring your own status
