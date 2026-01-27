@@ -175,35 +175,6 @@ void source_sink(int state){
         world[source_x][source_y] = 1;
 	}
 }
-
-
-/*---This function will take the data from world and then latch it into
- *  1 byte which contains the state of every led in that row-------------*/
-
-void pack_data(void){
-	for(int i=0; i<16; i++) display_buffer[i]=0;
-
-	for(int y=0; y<16; y++){
-		int col=(y<8)?8:0;
-		for (int x=0; x<8; x++){
-			if (world[col+x][y]==1){
-				display_buffer[y]|=(1<<(x));
-			}
-		}
-	}
-
-}
-
-/*----------This function will take the data we have packed in the previous func
- *  to latch it out MAX7219-------------*/
-
-void flush_to_max7219(void){
-	for(int row=0; row<16; row++){
-		max_write(row+1, display_buffer[row]);
-	}
-}
-
-
 /*------
  * Func: Making the boudary for every state------------*/
 
@@ -255,6 +226,7 @@ bool can_move_to_state0below(int tx, int ty) //=can_move_to_state2upper
     if (world[tx][ty] == 1) return false;
     return true;
 }
+
 
 /*-----------Func: Define the gravity of each state------------*/
 // 1.  (Forward)
@@ -484,6 +456,7 @@ void move_particle_state2below(int x, int y) //=state2 upper
 	//Đứng yên
 }
 
+
 /*
  * Func: Scan the matrices and move the particle with the logic
  * */
@@ -556,6 +529,33 @@ void Update_World(int state) {
             Update_State_0_Down();
             break;
     }
+}
+
+
+/*---This function will take the data from world and then latch it into
+ *  1 byte which contains the state of every led in that row-------------*/
+
+void pack_data(void){
+	for(int i=0; i<16; i++) display_buffer[i]=0;
+
+	for(int y=0; y<16; y++){
+		int col=(y<8)?8:0;
+		for (int x=0; x<8; x++){
+			if (world[col+x][y]==1){
+				display_buffer[y]|=(1<<(x));
+			}
+		}
+	}
+
+}
+
+/*----------This function will take the data we have packed in the previous func
+ *  to latch it out MAX7219-------------*/
+
+void flush_to_max7219(void){
+	for(int row=0; row<16; row++){
+		max_write(row+1, display_buffer[row]);
+	}
 }
 
 

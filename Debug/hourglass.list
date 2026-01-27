@@ -29,23 +29,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  12 .debug_info   0000986a  00000000  00000000  00008121  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001e7f  00000000  00000000  0001198b  2**0
+ 13 .debug_abbrev 00001e6a  00000000  00000000  0001198b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000a90  00000000  00000000  00013810  2**3
+ 14 .debug_aranges 00000a90  00000000  00000000  000137f8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 0000080a  00000000  00000000  000142a0  2**0
+ 15 .debug_rnglists 0000080a  00000000  00000000  00014288  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00018663  00000000  00000000  00014aaa  2**0
+ 16 .debug_macro  00018663  00000000  00000000  00014a92  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000dc7b  00000000  00000000  0002d10d  2**0
+ 17 .debug_line   0000dc7b  00000000  00000000  0002d0f5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00086796  00000000  00000000  0003ad88  2**0
+ 18 .debug_str    00086796  00000000  00000000  0003ad70  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000c151e  2**0
+ 19 .comment      00000043  00000000  00000000  000c1506  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000374c  00000000  00000000  000c1564  2**2
+ 20 .debug_frame  0000374c  00000000  00000000  000c154c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000005f  00000000  00000000  000c4cb0  2**0
+ 21 .debug_line_str 0000005f  00000000  00000000  000c4c98  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1895,1905 +1895,1904 @@ void source_sink(int state){
  80012d6:	bf00      	nop
  80012d8:	20000178 	.word	0x20000178
 
-080012dc <pack_data>:
-
-
-/*---This function will take the data from world and then latch it into
- *  1 byte which contains the state of every led in that row-------------*/
-
-void pack_data(void){
- 80012dc:	b480      	push	{r7}
- 80012de:	b085      	sub	sp, #20
- 80012e0:	af00      	add	r7, sp, #0
-	for(int i=0; i<16; i++) display_buffer[i]=0;
- 80012e2:	2300      	movs	r3, #0
- 80012e4:	60fb      	str	r3, [r7, #12]
- 80012e6:	e007      	b.n	80012f8 <pack_data+0x1c>
- 80012e8:	4a23      	ldr	r2, [pc, #140]	@ (8001378 <pack_data+0x9c>)
- 80012ea:	68fb      	ldr	r3, [r7, #12]
- 80012ec:	4413      	add	r3, r2
- 80012ee:	2200      	movs	r2, #0
- 80012f0:	701a      	strb	r2, [r3, #0]
- 80012f2:	68fb      	ldr	r3, [r7, #12]
- 80012f4:	3301      	adds	r3, #1
- 80012f6:	60fb      	str	r3, [r7, #12]
- 80012f8:	68fb      	ldr	r3, [r7, #12]
- 80012fa:	2b0f      	cmp	r3, #15
- 80012fc:	ddf4      	ble.n	80012e8 <pack_data+0xc>
-
-	for(int y=0; y<16; y++){
- 80012fe:	2300      	movs	r3, #0
- 8001300:	60bb      	str	r3, [r7, #8]
- 8001302:	e02f      	b.n	8001364 <pack_data+0x88>
-		int col=(y<8)?8:0;
- 8001304:	68bb      	ldr	r3, [r7, #8]
- 8001306:	2b07      	cmp	r3, #7
- 8001308:	dc01      	bgt.n	800130e <pack_data+0x32>
- 800130a:	2308      	movs	r3, #8
- 800130c:	e000      	b.n	8001310 <pack_data+0x34>
- 800130e:	2300      	movs	r3, #0
- 8001310:	603b      	str	r3, [r7, #0]
-		for (int x=0; x<8; x++){
- 8001312:	2300      	movs	r3, #0
- 8001314:	607b      	str	r3, [r7, #4]
- 8001316:	e01f      	b.n	8001358 <pack_data+0x7c>
-			if (world[col+x][y]==1){
- 8001318:	683a      	ldr	r2, [r7, #0]
- 800131a:	687b      	ldr	r3, [r7, #4]
- 800131c:	4413      	add	r3, r2
- 800131e:	4a17      	ldr	r2, [pc, #92]	@ (800137c <pack_data+0xa0>)
- 8001320:	011b      	lsls	r3, r3, #4
- 8001322:	441a      	add	r2, r3
- 8001324:	68bb      	ldr	r3, [r7, #8]
- 8001326:	4413      	add	r3, r2
- 8001328:	781b      	ldrb	r3, [r3, #0]
- 800132a:	2b01      	cmp	r3, #1
- 800132c:	d111      	bne.n	8001352 <pack_data+0x76>
-				display_buffer[y]|=(1<<(x));
- 800132e:	4a12      	ldr	r2, [pc, #72]	@ (8001378 <pack_data+0x9c>)
- 8001330:	68bb      	ldr	r3, [r7, #8]
- 8001332:	4413      	add	r3, r2
- 8001334:	781b      	ldrb	r3, [r3, #0]
- 8001336:	b25a      	sxtb	r2, r3
- 8001338:	2101      	movs	r1, #1
- 800133a:	687b      	ldr	r3, [r7, #4]
- 800133c:	fa01 f303 	lsl.w	r3, r1, r3
- 8001340:	b25b      	sxtb	r3, r3
- 8001342:	4313      	orrs	r3, r2
- 8001344:	b25b      	sxtb	r3, r3
- 8001346:	b2d9      	uxtb	r1, r3
- 8001348:	4a0b      	ldr	r2, [pc, #44]	@ (8001378 <pack_data+0x9c>)
- 800134a:	68bb      	ldr	r3, [r7, #8]
- 800134c:	4413      	add	r3, r2
- 800134e:	460a      	mov	r2, r1
- 8001350:	701a      	strb	r2, [r3, #0]
-		for (int x=0; x<8; x++){
- 8001352:	687b      	ldr	r3, [r7, #4]
- 8001354:	3301      	adds	r3, #1
- 8001356:	607b      	str	r3, [r7, #4]
- 8001358:	687b      	ldr	r3, [r7, #4]
- 800135a:	2b07      	cmp	r3, #7
- 800135c:	dddc      	ble.n	8001318 <pack_data+0x3c>
-	for(int y=0; y<16; y++){
- 800135e:	68bb      	ldr	r3, [r7, #8]
- 8001360:	3301      	adds	r3, #1
- 8001362:	60bb      	str	r3, [r7, #8]
- 8001364:	68bb      	ldr	r3, [r7, #8]
- 8001366:	2b0f      	cmp	r3, #15
- 8001368:	ddcc      	ble.n	8001304 <pack_data+0x28>
-			}
-		}
-	}
-
-}
- 800136a:	bf00      	nop
- 800136c:	bf00      	nop
- 800136e:	3714      	adds	r7, #20
- 8001370:	46bd      	mov	sp, r7
- 8001372:	bc80      	pop	{r7}
- 8001374:	4770      	bx	lr
- 8001376:	bf00      	nop
- 8001378:	20000168 	.word	0x20000168
- 800137c:	20000178 	.word	0x20000178
-
-08001380 <flush_to_max7219>:
-
-/*----------This function will take the data we have packed in the previous func
- *  to latch it out MAX7219-------------*/
-
-void flush_to_max7219(void){
- 8001380:	b580      	push	{r7, lr}
- 8001382:	b082      	sub	sp, #8
- 8001384:	af00      	add	r7, sp, #0
-	for(int row=0; row<16; row++){
- 8001386:	2300      	movs	r3, #0
- 8001388:	607b      	str	r3, [r7, #4]
- 800138a:	e00c      	b.n	80013a6 <flush_to_max7219+0x26>
-		max_write(row+1, display_buffer[row]);
- 800138c:	687b      	ldr	r3, [r7, #4]
- 800138e:	1c5a      	adds	r2, r3, #1
- 8001390:	4909      	ldr	r1, [pc, #36]	@ (80013b8 <flush_to_max7219+0x38>)
- 8001392:	687b      	ldr	r3, [r7, #4]
- 8001394:	440b      	add	r3, r1
- 8001396:	781b      	ldrb	r3, [r3, #0]
- 8001398:	4619      	mov	r1, r3
- 800139a:	4610      	mov	r0, r2
- 800139c:	f7ff fe80 	bl	80010a0 <max_write>
-	for(int row=0; row<16; row++){
- 80013a0:	687b      	ldr	r3, [r7, #4]
- 80013a2:	3301      	adds	r3, #1
- 80013a4:	607b      	str	r3, [r7, #4]
- 80013a6:	687b      	ldr	r3, [r7, #4]
- 80013a8:	2b0f      	cmp	r3, #15
- 80013aa:	ddef      	ble.n	800138c <flush_to_max7219+0xc>
-	}
-}
- 80013ac:	bf00      	nop
- 80013ae:	bf00      	nop
- 80013b0:	3708      	adds	r7, #8
- 80013b2:	46bd      	mov	sp, r7
- 80013b4:	bd80      	pop	{r7, pc}
- 80013b6:	bf00      	nop
- 80013b8:	20000168 	.word	0x20000168
-
-080013bc <check_inbound>:
-
+080012dc <check_inbound>:
 /*------
  * Func: Making the boudary for every state------------*/
 
 
 bool check_inbound(int x, int y) {
- 80013bc:	b480      	push	{r7}
- 80013be:	b083      	sub	sp, #12
- 80013c0:	af00      	add	r7, sp, #0
- 80013c2:	6078      	str	r0, [r7, #4]
- 80013c4:	6039      	str	r1, [r7, #0]
+ 80012dc:	b480      	push	{r7}
+ 80012de:	b083      	sub	sp, #12
+ 80012e0:	af00      	add	r7, sp, #0
+ 80012e2:	6078      	str	r0, [r7, #4]
+ 80012e4:	6039      	str	r1, [r7, #0]
     if (x < 0 || x > 15 || y < 0 || y > 15) return false;
- 80013c6:	687b      	ldr	r3, [r7, #4]
- 80013c8:	2b00      	cmp	r3, #0
- 80013ca:	db08      	blt.n	80013de <check_inbound+0x22>
- 80013cc:	687b      	ldr	r3, [r7, #4]
- 80013ce:	2b0f      	cmp	r3, #15
- 80013d0:	dc05      	bgt.n	80013de <check_inbound+0x22>
- 80013d2:	683b      	ldr	r3, [r7, #0]
- 80013d4:	2b00      	cmp	r3, #0
- 80013d6:	db02      	blt.n	80013de <check_inbound+0x22>
- 80013d8:	683b      	ldr	r3, [r7, #0]
- 80013da:	2b0f      	cmp	r3, #15
- 80013dc:	dd01      	ble.n	80013e2 <check_inbound+0x26>
- 80013de:	2300      	movs	r3, #0
- 80013e0:	e01c      	b.n	800141c <check_inbound+0x60>
+ 80012e6:	687b      	ldr	r3, [r7, #4]
+ 80012e8:	2b00      	cmp	r3, #0
+ 80012ea:	db08      	blt.n	80012fe <check_inbound+0x22>
+ 80012ec:	687b      	ldr	r3, [r7, #4]
+ 80012ee:	2b0f      	cmp	r3, #15
+ 80012f0:	dc05      	bgt.n	80012fe <check_inbound+0x22>
+ 80012f2:	683b      	ldr	r3, [r7, #0]
+ 80012f4:	2b00      	cmp	r3, #0
+ 80012f6:	db02      	blt.n	80012fe <check_inbound+0x22>
+ 80012f8:	683b      	ldr	r3, [r7, #0]
+ 80012fa:	2b0f      	cmp	r3, #15
+ 80012fc:	dd01      	ble.n	8001302 <check_inbound+0x26>
+ 80012fe:	2300      	movs	r3, #0
+ 8001300:	e01c      	b.n	800133c <check_inbound+0x60>
 
     if (x >= 0 && x <= 7 && y >= 8 && y <= 15) return true;
- 80013e2:	687b      	ldr	r3, [r7, #4]
- 80013e4:	2b00      	cmp	r3, #0
- 80013e6:	db0a      	blt.n	80013fe <check_inbound+0x42>
- 80013e8:	687b      	ldr	r3, [r7, #4]
- 80013ea:	2b07      	cmp	r3, #7
- 80013ec:	dc07      	bgt.n	80013fe <check_inbound+0x42>
- 80013ee:	683b      	ldr	r3, [r7, #0]
- 80013f0:	2b07      	cmp	r3, #7
- 80013f2:	dd04      	ble.n	80013fe <check_inbound+0x42>
- 80013f4:	683b      	ldr	r3, [r7, #0]
- 80013f6:	2b0f      	cmp	r3, #15
- 80013f8:	dc01      	bgt.n	80013fe <check_inbound+0x42>
- 80013fa:	2301      	movs	r3, #1
- 80013fc:	e00e      	b.n	800141c <check_inbound+0x60>
+ 8001302:	687b      	ldr	r3, [r7, #4]
+ 8001304:	2b00      	cmp	r3, #0
+ 8001306:	db0a      	blt.n	800131e <check_inbound+0x42>
+ 8001308:	687b      	ldr	r3, [r7, #4]
+ 800130a:	2b07      	cmp	r3, #7
+ 800130c:	dc07      	bgt.n	800131e <check_inbound+0x42>
+ 800130e:	683b      	ldr	r3, [r7, #0]
+ 8001310:	2b07      	cmp	r3, #7
+ 8001312:	dd04      	ble.n	800131e <check_inbound+0x42>
+ 8001314:	683b      	ldr	r3, [r7, #0]
+ 8001316:	2b0f      	cmp	r3, #15
+ 8001318:	dc01      	bgt.n	800131e <check_inbound+0x42>
+ 800131a:	2301      	movs	r3, #1
+ 800131c:	e00e      	b.n	800133c <check_inbound+0x60>
 
     if (x >= 8 && x <= 15 && y >= 0 && y <= 7) return true;
- 80013fe:	687b      	ldr	r3, [r7, #4]
- 8001400:	2b07      	cmp	r3, #7
- 8001402:	dd0a      	ble.n	800141a <check_inbound+0x5e>
- 8001404:	687b      	ldr	r3, [r7, #4]
- 8001406:	2b0f      	cmp	r3, #15
- 8001408:	dc07      	bgt.n	800141a <check_inbound+0x5e>
- 800140a:	683b      	ldr	r3, [r7, #0]
- 800140c:	2b00      	cmp	r3, #0
- 800140e:	db04      	blt.n	800141a <check_inbound+0x5e>
- 8001410:	683b      	ldr	r3, [r7, #0]
- 8001412:	2b07      	cmp	r3, #7
- 8001414:	dc01      	bgt.n	800141a <check_inbound+0x5e>
- 8001416:	2301      	movs	r3, #1
- 8001418:	e000      	b.n	800141c <check_inbound+0x60>
+ 800131e:	687b      	ldr	r3, [r7, #4]
+ 8001320:	2b07      	cmp	r3, #7
+ 8001322:	dd0a      	ble.n	800133a <check_inbound+0x5e>
+ 8001324:	687b      	ldr	r3, [r7, #4]
+ 8001326:	2b0f      	cmp	r3, #15
+ 8001328:	dc07      	bgt.n	800133a <check_inbound+0x5e>
+ 800132a:	683b      	ldr	r3, [r7, #0]
+ 800132c:	2b00      	cmp	r3, #0
+ 800132e:	db04      	blt.n	800133a <check_inbound+0x5e>
+ 8001330:	683b      	ldr	r3, [r7, #0]
+ 8001332:	2b07      	cmp	r3, #7
+ 8001334:	dc01      	bgt.n	800133a <check_inbound+0x5e>
+ 8001336:	2301      	movs	r3, #1
+ 8001338:	e000      	b.n	800133c <check_inbound+0x60>
 
     return false;
- 800141a:	2300      	movs	r3, #0
+ 800133a:	2300      	movs	r3, #0
 }
- 800141c:	4618      	mov	r0, r3
- 800141e:	370c      	adds	r7, #12
- 8001420:	46bd      	mov	sp, r7
- 8001422:	bc80      	pop	{r7}
- 8001424:	4770      	bx	lr
+ 800133c:	4618      	mov	r0, r3
+ 800133e:	370c      	adds	r7, #12
+ 8001340:	46bd      	mov	sp, r7
+ 8001342:	bc80      	pop	{r7}
+ 8001344:	4770      	bx	lr
 
-08001426 <check_inbound_state0upper>:
+08001346 <check_inbound_state0upper>:
 
 bool check_inbound_state0upper(int x, int y) // =state2below
 {
- 8001426:	b480      	push	{r7}
- 8001428:	b083      	sub	sp, #12
- 800142a:	af00      	add	r7, sp, #0
- 800142c:	6078      	str	r0, [r7, #4]
- 800142e:	6039      	str	r1, [r7, #0]
+ 8001346:	b480      	push	{r7}
+ 8001348:	b083      	sub	sp, #12
+ 800134a:	af00      	add	r7, sp, #0
+ 800134c:	6078      	str	r0, [r7, #4]
+ 800134e:	6039      	str	r1, [r7, #0]
 		if (x < 0 || x > 15 || y < 0 || y > 15) return false;
- 8001430:	687b      	ldr	r3, [r7, #4]
- 8001432:	2b00      	cmp	r3, #0
- 8001434:	db08      	blt.n	8001448 <check_inbound_state0upper+0x22>
- 8001436:	687b      	ldr	r3, [r7, #4]
- 8001438:	2b0f      	cmp	r3, #15
- 800143a:	dc05      	bgt.n	8001448 <check_inbound_state0upper+0x22>
- 800143c:	683b      	ldr	r3, [r7, #0]
- 800143e:	2b00      	cmp	r3, #0
- 8001440:	db02      	blt.n	8001448 <check_inbound_state0upper+0x22>
- 8001442:	683b      	ldr	r3, [r7, #0]
- 8001444:	2b0f      	cmp	r3, #15
- 8001446:	dd01      	ble.n	800144c <check_inbound_state0upper+0x26>
- 8001448:	2300      	movs	r3, #0
- 800144a:	e00e      	b.n	800146a <check_inbound_state0upper+0x44>
+ 8001350:	687b      	ldr	r3, [r7, #4]
+ 8001352:	2b00      	cmp	r3, #0
+ 8001354:	db08      	blt.n	8001368 <check_inbound_state0upper+0x22>
+ 8001356:	687b      	ldr	r3, [r7, #4]
+ 8001358:	2b0f      	cmp	r3, #15
+ 800135a:	dc05      	bgt.n	8001368 <check_inbound_state0upper+0x22>
+ 800135c:	683b      	ldr	r3, [r7, #0]
+ 800135e:	2b00      	cmp	r3, #0
+ 8001360:	db02      	blt.n	8001368 <check_inbound_state0upper+0x22>
+ 8001362:	683b      	ldr	r3, [r7, #0]
+ 8001364:	2b0f      	cmp	r3, #15
+ 8001366:	dd01      	ble.n	800136c <check_inbound_state0upper+0x26>
+ 8001368:	2300      	movs	r3, #0
+ 800136a:	e00e      	b.n	800138a <check_inbound_state0upper+0x44>
 
 	    if (x>=0&& x<=7&&y>=8&&y<=15) return true;
- 800144c:	687b      	ldr	r3, [r7, #4]
- 800144e:	2b00      	cmp	r3, #0
- 8001450:	db0a      	blt.n	8001468 <check_inbound_state0upper+0x42>
- 8001452:	687b      	ldr	r3, [r7, #4]
- 8001454:	2b07      	cmp	r3, #7
- 8001456:	dc07      	bgt.n	8001468 <check_inbound_state0upper+0x42>
- 8001458:	683b      	ldr	r3, [r7, #0]
- 800145a:	2b07      	cmp	r3, #7
- 800145c:	dd04      	ble.n	8001468 <check_inbound_state0upper+0x42>
- 800145e:	683b      	ldr	r3, [r7, #0]
- 8001460:	2b0f      	cmp	r3, #15
- 8001462:	dc01      	bgt.n	8001468 <check_inbound_state0upper+0x42>
- 8001464:	2301      	movs	r3, #1
- 8001466:	e000      	b.n	800146a <check_inbound_state0upper+0x44>
+ 800136c:	687b      	ldr	r3, [r7, #4]
+ 800136e:	2b00      	cmp	r3, #0
+ 8001370:	db0a      	blt.n	8001388 <check_inbound_state0upper+0x42>
+ 8001372:	687b      	ldr	r3, [r7, #4]
+ 8001374:	2b07      	cmp	r3, #7
+ 8001376:	dc07      	bgt.n	8001388 <check_inbound_state0upper+0x42>
+ 8001378:	683b      	ldr	r3, [r7, #0]
+ 800137a:	2b07      	cmp	r3, #7
+ 800137c:	dd04      	ble.n	8001388 <check_inbound_state0upper+0x42>
+ 800137e:	683b      	ldr	r3, [r7, #0]
+ 8001380:	2b0f      	cmp	r3, #15
+ 8001382:	dc01      	bgt.n	8001388 <check_inbound_state0upper+0x42>
+ 8001384:	2301      	movs	r3, #1
+ 8001386:	e000      	b.n	800138a <check_inbound_state0upper+0x44>
 	    return false;
- 8001468:	2300      	movs	r3, #0
+ 8001388:	2300      	movs	r3, #0
 }
- 800146a:	4618      	mov	r0, r3
- 800146c:	370c      	adds	r7, #12
- 800146e:	46bd      	mov	sp, r7
- 8001470:	bc80      	pop	{r7}
- 8001472:	4770      	bx	lr
+ 800138a:	4618      	mov	r0, r3
+ 800138c:	370c      	adds	r7, #12
+ 800138e:	46bd      	mov	sp, r7
+ 8001390:	bc80      	pop	{r7}
+ 8001392:	4770      	bx	lr
 
-08001474 <check_inbound_state0below>:
+08001394 <check_inbound_state0below>:
 bool check_inbound_state0below(int x, int y) // =state2upper
 {
- 8001474:	b480      	push	{r7}
- 8001476:	b083      	sub	sp, #12
- 8001478:	af00      	add	r7, sp, #0
- 800147a:	6078      	str	r0, [r7, #4]
- 800147c:	6039      	str	r1, [r7, #0]
+ 8001394:	b480      	push	{r7}
+ 8001396:	b083      	sub	sp, #12
+ 8001398:	af00      	add	r7, sp, #0
+ 800139a:	6078      	str	r0, [r7, #4]
+ 800139c:	6039      	str	r1, [r7, #0]
 		if (x < 0 || x > 15 || y < 0 || y > 15) return false;
- 800147e:	687b      	ldr	r3, [r7, #4]
- 8001480:	2b00      	cmp	r3, #0
- 8001482:	db08      	blt.n	8001496 <check_inbound_state0below+0x22>
- 8001484:	687b      	ldr	r3, [r7, #4]
- 8001486:	2b0f      	cmp	r3, #15
- 8001488:	dc05      	bgt.n	8001496 <check_inbound_state0below+0x22>
- 800148a:	683b      	ldr	r3, [r7, #0]
- 800148c:	2b00      	cmp	r3, #0
- 800148e:	db02      	blt.n	8001496 <check_inbound_state0below+0x22>
- 8001490:	683b      	ldr	r3, [r7, #0]
- 8001492:	2b0f      	cmp	r3, #15
- 8001494:	dd01      	ble.n	800149a <check_inbound_state0below+0x26>
- 8001496:	2300      	movs	r3, #0
- 8001498:	e00e      	b.n	80014b8 <check_inbound_state0below+0x44>
+ 800139e:	687b      	ldr	r3, [r7, #4]
+ 80013a0:	2b00      	cmp	r3, #0
+ 80013a2:	db08      	blt.n	80013b6 <check_inbound_state0below+0x22>
+ 80013a4:	687b      	ldr	r3, [r7, #4]
+ 80013a6:	2b0f      	cmp	r3, #15
+ 80013a8:	dc05      	bgt.n	80013b6 <check_inbound_state0below+0x22>
+ 80013aa:	683b      	ldr	r3, [r7, #0]
+ 80013ac:	2b00      	cmp	r3, #0
+ 80013ae:	db02      	blt.n	80013b6 <check_inbound_state0below+0x22>
+ 80013b0:	683b      	ldr	r3, [r7, #0]
+ 80013b2:	2b0f      	cmp	r3, #15
+ 80013b4:	dd01      	ble.n	80013ba <check_inbound_state0below+0x26>
+ 80013b6:	2300      	movs	r3, #0
+ 80013b8:	e00e      	b.n	80013d8 <check_inbound_state0below+0x44>
 
 	    if (x>=8&& x<=15&&y>=0&&y<=7) return true;
- 800149a:	687b      	ldr	r3, [r7, #4]
- 800149c:	2b07      	cmp	r3, #7
- 800149e:	dd0a      	ble.n	80014b6 <check_inbound_state0below+0x42>
- 80014a0:	687b      	ldr	r3, [r7, #4]
- 80014a2:	2b0f      	cmp	r3, #15
- 80014a4:	dc07      	bgt.n	80014b6 <check_inbound_state0below+0x42>
- 80014a6:	683b      	ldr	r3, [r7, #0]
- 80014a8:	2b00      	cmp	r3, #0
- 80014aa:	db04      	blt.n	80014b6 <check_inbound_state0below+0x42>
- 80014ac:	683b      	ldr	r3, [r7, #0]
- 80014ae:	2b07      	cmp	r3, #7
- 80014b0:	dc01      	bgt.n	80014b6 <check_inbound_state0below+0x42>
- 80014b2:	2301      	movs	r3, #1
- 80014b4:	e000      	b.n	80014b8 <check_inbound_state0below+0x44>
+ 80013ba:	687b      	ldr	r3, [r7, #4]
+ 80013bc:	2b07      	cmp	r3, #7
+ 80013be:	dd0a      	ble.n	80013d6 <check_inbound_state0below+0x42>
+ 80013c0:	687b      	ldr	r3, [r7, #4]
+ 80013c2:	2b0f      	cmp	r3, #15
+ 80013c4:	dc07      	bgt.n	80013d6 <check_inbound_state0below+0x42>
+ 80013c6:	683b      	ldr	r3, [r7, #0]
+ 80013c8:	2b00      	cmp	r3, #0
+ 80013ca:	db04      	blt.n	80013d6 <check_inbound_state0below+0x42>
+ 80013cc:	683b      	ldr	r3, [r7, #0]
+ 80013ce:	2b07      	cmp	r3, #7
+ 80013d0:	dc01      	bgt.n	80013d6 <check_inbound_state0below+0x42>
+ 80013d2:	2301      	movs	r3, #1
+ 80013d4:	e000      	b.n	80013d8 <check_inbound_state0below+0x44>
 	    return false;
- 80014b6:	2300      	movs	r3, #0
+ 80013d6:	2300      	movs	r3, #0
 }
- 80014b8:	4618      	mov	r0, r3
- 80014ba:	370c      	adds	r7, #12
- 80014bc:	46bd      	mov	sp, r7
- 80014be:	bc80      	pop	{r7}
- 80014c0:	4770      	bx	lr
+ 80013d8:	4618      	mov	r0, r3
+ 80013da:	370c      	adds	r7, #12
+ 80013dc:	46bd      	mov	sp, r7
+ 80013de:	bc80      	pop	{r7}
+ 80013e0:	4770      	bx	lr
 	...
 
-080014c4 <can_move_to>:
+080013e4 <can_move_to>:
 
 //desired result: state0 will have the boundary of the upper matrix state2 will be lower
 
 
 /*-------------Func: To check if the led can move or not-------------*/
 bool can_move_to(int tx, int ty) {
- 80014c4:	b580      	push	{r7, lr}
- 80014c6:	b082      	sub	sp, #8
- 80014c8:	af00      	add	r7, sp, #0
- 80014ca:	6078      	str	r0, [r7, #4]
- 80014cc:	6039      	str	r1, [r7, #0]
+ 80013e4:	b580      	push	{r7, lr}
+ 80013e6:	b082      	sub	sp, #8
+ 80013e8:	af00      	add	r7, sp, #0
+ 80013ea:	6078      	str	r0, [r7, #4]
+ 80013ec:	6039      	str	r1, [r7, #0]
     if (!check_inbound(tx, ty)) return false; // boundary
- 80014ce:	6839      	ldr	r1, [r7, #0]
- 80014d0:	6878      	ldr	r0, [r7, #4]
- 80014d2:	f7ff ff73 	bl	80013bc <check_inbound>
- 80014d6:	4603      	mov	r3, r0
- 80014d8:	f083 0301 	eor.w	r3, r3, #1
- 80014dc:	b2db      	uxtb	r3, r3
- 80014de:	2b00      	cmp	r3, #0
- 80014e0:	d001      	beq.n	80014e6 <can_move_to+0x22>
- 80014e2:	2300      	movs	r3, #0
- 80014e4:	e00b      	b.n	80014fe <can_move_to+0x3a>
+ 80013ee:	6839      	ldr	r1, [r7, #0]
+ 80013f0:	6878      	ldr	r0, [r7, #4]
+ 80013f2:	f7ff ff73 	bl	80012dc <check_inbound>
+ 80013f6:	4603      	mov	r3, r0
+ 80013f8:	f083 0301 	eor.w	r3, r3, #1
+ 80013fc:	b2db      	uxtb	r3, r3
+ 80013fe:	2b00      	cmp	r3, #0
+ 8001400:	d001      	beq.n	8001406 <can_move_to+0x22>
+ 8001402:	2300      	movs	r3, #0
+ 8001404:	e00b      	b.n	800141e <can_move_to+0x3a>
     if (world[tx][ty] == 1) return false;     // another led
- 80014e6:	4a08      	ldr	r2, [pc, #32]	@ (8001508 <can_move_to+0x44>)
- 80014e8:	687b      	ldr	r3, [r7, #4]
- 80014ea:	011b      	lsls	r3, r3, #4
- 80014ec:	441a      	add	r2, r3
- 80014ee:	683b      	ldr	r3, [r7, #0]
- 80014f0:	4413      	add	r3, r2
- 80014f2:	781b      	ldrb	r3, [r3, #0]
- 80014f4:	2b01      	cmp	r3, #1
- 80014f6:	d101      	bne.n	80014fc <can_move_to+0x38>
- 80014f8:	2300      	movs	r3, #0
- 80014fa:	e000      	b.n	80014fe <can_move_to+0x3a>
+ 8001406:	4a08      	ldr	r2, [pc, #32]	@ (8001428 <can_move_to+0x44>)
+ 8001408:	687b      	ldr	r3, [r7, #4]
+ 800140a:	011b      	lsls	r3, r3, #4
+ 800140c:	441a      	add	r2, r3
+ 800140e:	683b      	ldr	r3, [r7, #0]
+ 8001410:	4413      	add	r3, r2
+ 8001412:	781b      	ldrb	r3, [r3, #0]
+ 8001414:	2b01      	cmp	r3, #1
+ 8001416:	d101      	bne.n	800141c <can_move_to+0x38>
+ 8001418:	2300      	movs	r3, #0
+ 800141a:	e000      	b.n	800141e <can_move_to+0x3a>
     return true;
- 80014fc:	2301      	movs	r3, #1
+ 800141c:	2301      	movs	r3, #1
 }
- 80014fe:	4618      	mov	r0, r3
- 8001500:	3708      	adds	r7, #8
- 8001502:	46bd      	mov	sp, r7
- 8001504:	bd80      	pop	{r7, pc}
- 8001506:	bf00      	nop
- 8001508:	20000178 	.word	0x20000178
+ 800141e:	4618      	mov	r0, r3
+ 8001420:	3708      	adds	r7, #8
+ 8001422:	46bd      	mov	sp, r7
+ 8001424:	bd80      	pop	{r7, pc}
+ 8001426:	bf00      	nop
+ 8001428:	20000178 	.word	0x20000178
 
-0800150c <can_move_to_state0upper>:
+0800142c <can_move_to_state0upper>:
 
 bool can_move_to_state0upper(int tx, int ty) //=can_move_to_state2below
 {
- 800150c:	b580      	push	{r7, lr}
- 800150e:	b082      	sub	sp, #8
- 8001510:	af00      	add	r7, sp, #0
- 8001512:	6078      	str	r0, [r7, #4]
- 8001514:	6039      	str	r1, [r7, #0]
+ 800142c:	b580      	push	{r7, lr}
+ 800142e:	b082      	sub	sp, #8
+ 8001430:	af00      	add	r7, sp, #0
+ 8001432:	6078      	str	r0, [r7, #4]
+ 8001434:	6039      	str	r1, [r7, #0]
     if (!check_inbound_state0upper(tx, ty)) return false;
- 8001516:	6839      	ldr	r1, [r7, #0]
- 8001518:	6878      	ldr	r0, [r7, #4]
- 800151a:	f7ff ff84 	bl	8001426 <check_inbound_state0upper>
- 800151e:	4603      	mov	r3, r0
- 8001520:	f083 0301 	eor.w	r3, r3, #1
- 8001524:	b2db      	uxtb	r3, r3
- 8001526:	2b00      	cmp	r3, #0
- 8001528:	d001      	beq.n	800152e <can_move_to_state0upper+0x22>
- 800152a:	2300      	movs	r3, #0
- 800152c:	e00b      	b.n	8001546 <can_move_to_state0upper+0x3a>
+ 8001436:	6839      	ldr	r1, [r7, #0]
+ 8001438:	6878      	ldr	r0, [r7, #4]
+ 800143a:	f7ff ff84 	bl	8001346 <check_inbound_state0upper>
+ 800143e:	4603      	mov	r3, r0
+ 8001440:	f083 0301 	eor.w	r3, r3, #1
+ 8001444:	b2db      	uxtb	r3, r3
+ 8001446:	2b00      	cmp	r3, #0
+ 8001448:	d001      	beq.n	800144e <can_move_to_state0upper+0x22>
+ 800144a:	2300      	movs	r3, #0
+ 800144c:	e00b      	b.n	8001466 <can_move_to_state0upper+0x3a>
     if (world[tx][ty] == 1) return false;
- 800152e:	4a08      	ldr	r2, [pc, #32]	@ (8001550 <can_move_to_state0upper+0x44>)
- 8001530:	687b      	ldr	r3, [r7, #4]
- 8001532:	011b      	lsls	r3, r3, #4
- 8001534:	441a      	add	r2, r3
- 8001536:	683b      	ldr	r3, [r7, #0]
- 8001538:	4413      	add	r3, r2
- 800153a:	781b      	ldrb	r3, [r3, #0]
- 800153c:	2b01      	cmp	r3, #1
- 800153e:	d101      	bne.n	8001544 <can_move_to_state0upper+0x38>
- 8001540:	2300      	movs	r3, #0
- 8001542:	e000      	b.n	8001546 <can_move_to_state0upper+0x3a>
+ 800144e:	4a08      	ldr	r2, [pc, #32]	@ (8001470 <can_move_to_state0upper+0x44>)
+ 8001450:	687b      	ldr	r3, [r7, #4]
+ 8001452:	011b      	lsls	r3, r3, #4
+ 8001454:	441a      	add	r2, r3
+ 8001456:	683b      	ldr	r3, [r7, #0]
+ 8001458:	4413      	add	r3, r2
+ 800145a:	781b      	ldrb	r3, [r3, #0]
+ 800145c:	2b01      	cmp	r3, #1
+ 800145e:	d101      	bne.n	8001464 <can_move_to_state0upper+0x38>
+ 8001460:	2300      	movs	r3, #0
+ 8001462:	e000      	b.n	8001466 <can_move_to_state0upper+0x3a>
     return true;
- 8001544:	2301      	movs	r3, #1
+ 8001464:	2301      	movs	r3, #1
 }
- 8001546:	4618      	mov	r0, r3
- 8001548:	3708      	adds	r7, #8
- 800154a:	46bd      	mov	sp, r7
- 800154c:	bd80      	pop	{r7, pc}
- 800154e:	bf00      	nop
- 8001550:	20000178 	.word	0x20000178
+ 8001466:	4618      	mov	r0, r3
+ 8001468:	3708      	adds	r7, #8
+ 800146a:	46bd      	mov	sp, r7
+ 800146c:	bd80      	pop	{r7, pc}
+ 800146e:	bf00      	nop
+ 8001470:	20000178 	.word	0x20000178
 
-08001554 <can_move_to_state0below>:
+08001474 <can_move_to_state0below>:
 bool can_move_to_state0below(int tx, int ty) //=can_move_to_state2upper
 {
- 8001554:	b580      	push	{r7, lr}
- 8001556:	b082      	sub	sp, #8
- 8001558:	af00      	add	r7, sp, #0
- 800155a:	6078      	str	r0, [r7, #4]
- 800155c:	6039      	str	r1, [r7, #0]
+ 8001474:	b580      	push	{r7, lr}
+ 8001476:	b082      	sub	sp, #8
+ 8001478:	af00      	add	r7, sp, #0
+ 800147a:	6078      	str	r0, [r7, #4]
+ 800147c:	6039      	str	r1, [r7, #0]
     if (!check_inbound_state0below(tx, ty)) return false;
- 800155e:	6839      	ldr	r1, [r7, #0]
- 8001560:	6878      	ldr	r0, [r7, #4]
- 8001562:	f7ff ff87 	bl	8001474 <check_inbound_state0below>
- 8001566:	4603      	mov	r3, r0
- 8001568:	f083 0301 	eor.w	r3, r3, #1
- 800156c:	b2db      	uxtb	r3, r3
- 800156e:	2b00      	cmp	r3, #0
- 8001570:	d001      	beq.n	8001576 <can_move_to_state0below+0x22>
- 8001572:	2300      	movs	r3, #0
- 8001574:	e00b      	b.n	800158e <can_move_to_state0below+0x3a>
+ 800147e:	6839      	ldr	r1, [r7, #0]
+ 8001480:	6878      	ldr	r0, [r7, #4]
+ 8001482:	f7ff ff87 	bl	8001394 <check_inbound_state0below>
+ 8001486:	4603      	mov	r3, r0
+ 8001488:	f083 0301 	eor.w	r3, r3, #1
+ 800148c:	b2db      	uxtb	r3, r3
+ 800148e:	2b00      	cmp	r3, #0
+ 8001490:	d001      	beq.n	8001496 <can_move_to_state0below+0x22>
+ 8001492:	2300      	movs	r3, #0
+ 8001494:	e00b      	b.n	80014ae <can_move_to_state0below+0x3a>
     if (world[tx][ty] == 1) return false;
- 8001576:	4a08      	ldr	r2, [pc, #32]	@ (8001598 <can_move_to_state0below+0x44>)
- 8001578:	687b      	ldr	r3, [r7, #4]
- 800157a:	011b      	lsls	r3, r3, #4
- 800157c:	441a      	add	r2, r3
- 800157e:	683b      	ldr	r3, [r7, #0]
- 8001580:	4413      	add	r3, r2
- 8001582:	781b      	ldrb	r3, [r3, #0]
- 8001584:	2b01      	cmp	r3, #1
- 8001586:	d101      	bne.n	800158c <can_move_to_state0below+0x38>
- 8001588:	2300      	movs	r3, #0
- 800158a:	e000      	b.n	800158e <can_move_to_state0below+0x3a>
+ 8001496:	4a08      	ldr	r2, [pc, #32]	@ (80014b8 <can_move_to_state0below+0x44>)
+ 8001498:	687b      	ldr	r3, [r7, #4]
+ 800149a:	011b      	lsls	r3, r3, #4
+ 800149c:	441a      	add	r2, r3
+ 800149e:	683b      	ldr	r3, [r7, #0]
+ 80014a0:	4413      	add	r3, r2
+ 80014a2:	781b      	ldrb	r3, [r3, #0]
+ 80014a4:	2b01      	cmp	r3, #1
+ 80014a6:	d101      	bne.n	80014ac <can_move_to_state0below+0x38>
+ 80014a8:	2300      	movs	r3, #0
+ 80014aa:	e000      	b.n	80014ae <can_move_to_state0below+0x3a>
     return true;
- 800158c:	2301      	movs	r3, #1
+ 80014ac:	2301      	movs	r3, #1
 }
- 800158e:	4618      	mov	r0, r3
- 8001590:	3708      	adds	r7, #8
- 8001592:	46bd      	mov	sp, r7
- 8001594:	bd80      	pop	{r7, pc}
- 8001596:	bf00      	nop
- 8001598:	20000178 	.word	0x20000178
+ 80014ae:	4618      	mov	r0, r3
+ 80014b0:	3708      	adds	r7, #8
+ 80014b2:	46bd      	mov	sp, r7
+ 80014b4:	bd80      	pop	{r7, pc}
+ 80014b6:	bf00      	nop
+ 80014b8:	20000178 	.word	0x20000178
 
-0800159c <set_gravity_by_state>:
+080014bc <set_gravity_by_state>:
 int8_t fwdX, fwdY;
 // 2. (Left)
 int8_t leftX, leftY;
 // 3. (Right)
 int8_t rightX, rightY;
 void set_gravity_by_state(int state) {
- 800159c:	b480      	push	{r7}
- 800159e:	b083      	sub	sp, #12
- 80015a0:	af00      	add	r7, sp, #0
- 80015a2:	6078      	str	r0, [r7, #4]
+ 80014bc:	b480      	push	{r7}
+ 80014be:	b083      	sub	sp, #12
+ 80014c0:	af00      	add	r7, sp, #0
+ 80014c2:	6078      	str	r0, [r7, #4]
     switch (state) {
- 80015a4:	687b      	ldr	r3, [r7, #4]
- 80015a6:	2b03      	cmp	r3, #3
- 80015a8:	d856      	bhi.n	8001658 <set_gravity_by_state+0xbc>
- 80015aa:	a201      	add	r2, pc, #4	@ (adr r2, 80015b0 <set_gravity_by_state+0x14>)
- 80015ac:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
- 80015b0:	080015c1 	.word	0x080015c1
- 80015b4:	080015e7 	.word	0x080015e7
- 80015b8:	0800160d 	.word	0x0800160d
- 80015bc:	08001633 	.word	0x08001633
+ 80014c4:	687b      	ldr	r3, [r7, #4]
+ 80014c6:	2b03      	cmp	r3, #3
+ 80014c8:	d856      	bhi.n	8001578 <set_gravity_by_state+0xbc>
+ 80014ca:	a201      	add	r2, pc, #4	@ (adr r2, 80014d0 <set_gravity_by_state+0x14>)
+ 80014cc:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+ 80014d0:	080014e1 	.word	0x080014e1
+ 80014d4:	08001507 	.word	0x08001507
+ 80014d8:	0800152d 	.word	0x0800152d
+ 80014dc:	08001553 	.word	0x08001553
 
         case 0:
             fwdX = 1;  fwdY = -1;
- 80015c0:	4b28      	ldr	r3, [pc, #160]	@ (8001664 <set_gravity_by_state+0xc8>)
- 80015c2:	2201      	movs	r2, #1
- 80015c4:	701a      	strb	r2, [r3, #0]
- 80015c6:	4b28      	ldr	r3, [pc, #160]	@ (8001668 <set_gravity_by_state+0xcc>)
- 80015c8:	22ff      	movs	r2, #255	@ 0xff
- 80015ca:	701a      	strb	r2, [r3, #0]
+ 80014e0:	4b28      	ldr	r3, [pc, #160]	@ (8001584 <set_gravity_by_state+0xc8>)
+ 80014e2:	2201      	movs	r2, #1
+ 80014e4:	701a      	strb	r2, [r3, #0]
+ 80014e6:	4b28      	ldr	r3, [pc, #160]	@ (8001588 <set_gravity_by_state+0xcc>)
+ 80014e8:	22ff      	movs	r2, #255	@ 0xff
+ 80014ea:	701a      	strb	r2, [r3, #0]
 
             leftX = 0; leftY = -1;
- 80015cc:	4b27      	ldr	r3, [pc, #156]	@ (800166c <set_gravity_by_state+0xd0>)
- 80015ce:	2200      	movs	r2, #0
- 80015d0:	701a      	strb	r2, [r3, #0]
- 80015d2:	4b27      	ldr	r3, [pc, #156]	@ (8001670 <set_gravity_by_state+0xd4>)
- 80015d4:	22ff      	movs	r2, #255	@ 0xff
- 80015d6:	701a      	strb	r2, [r3, #0]
+ 80014ec:	4b27      	ldr	r3, [pc, #156]	@ (800158c <set_gravity_by_state+0xd0>)
+ 80014ee:	2200      	movs	r2, #0
+ 80014f0:	701a      	strb	r2, [r3, #0]
+ 80014f2:	4b27      	ldr	r3, [pc, #156]	@ (8001590 <set_gravity_by_state+0xd4>)
+ 80014f4:	22ff      	movs	r2, #255	@ 0xff
+ 80014f6:	701a      	strb	r2, [r3, #0]
 
             rightX = 1; rightY = 0;
- 80015d8:	4b26      	ldr	r3, [pc, #152]	@ (8001674 <set_gravity_by_state+0xd8>)
- 80015da:	2201      	movs	r2, #1
- 80015dc:	701a      	strb	r2, [r3, #0]
- 80015de:	4b26      	ldr	r3, [pc, #152]	@ (8001678 <set_gravity_by_state+0xdc>)
- 80015e0:	2200      	movs	r2, #0
- 80015e2:	701a      	strb	r2, [r3, #0]
+ 80014f8:	4b26      	ldr	r3, [pc, #152]	@ (8001594 <set_gravity_by_state+0xd8>)
+ 80014fa:	2201      	movs	r2, #1
+ 80014fc:	701a      	strb	r2, [r3, #0]
+ 80014fe:	4b26      	ldr	r3, [pc, #152]	@ (8001598 <set_gravity_by_state+0xdc>)
+ 8001500:	2200      	movs	r2, #0
+ 8001502:	701a      	strb	r2, [r3, #0]
             break;
- 80015e4:	e038      	b.n	8001658 <set_gravity_by_state+0xbc>
+ 8001504:	e038      	b.n	8001578 <set_gravity_by_state+0xbc>
 
         case 1:
             fwdX = 1; fwdY = 1;
- 80015e6:	4b1f      	ldr	r3, [pc, #124]	@ (8001664 <set_gravity_by_state+0xc8>)
- 80015e8:	2201      	movs	r2, #1
- 80015ea:	701a      	strb	r2, [r3, #0]
- 80015ec:	4b1e      	ldr	r3, [pc, #120]	@ (8001668 <set_gravity_by_state+0xcc>)
- 80015ee:	2201      	movs	r2, #1
- 80015f0:	701a      	strb	r2, [r3, #0]
+ 8001506:	4b1f      	ldr	r3, [pc, #124]	@ (8001584 <set_gravity_by_state+0xc8>)
+ 8001508:	2201      	movs	r2, #1
+ 800150a:	701a      	strb	r2, [r3, #0]
+ 800150c:	4b1e      	ldr	r3, [pc, #120]	@ (8001588 <set_gravity_by_state+0xcc>)
+ 800150e:	2201      	movs	r2, #1
+ 8001510:	701a      	strb	r2, [r3, #0]
 
             leftX = 1; leftY = 0;
- 80015f2:	4b1e      	ldr	r3, [pc, #120]	@ (800166c <set_gravity_by_state+0xd0>)
- 80015f4:	2201      	movs	r2, #1
- 80015f6:	701a      	strb	r2, [r3, #0]
- 80015f8:	4b1d      	ldr	r3, [pc, #116]	@ (8001670 <set_gravity_by_state+0xd4>)
- 80015fa:	2200      	movs	r2, #0
- 80015fc:	701a      	strb	r2, [r3, #0]
+ 8001512:	4b1e      	ldr	r3, [pc, #120]	@ (800158c <set_gravity_by_state+0xd0>)
+ 8001514:	2201      	movs	r2, #1
+ 8001516:	701a      	strb	r2, [r3, #0]
+ 8001518:	4b1d      	ldr	r3, [pc, #116]	@ (8001590 <set_gravity_by_state+0xd4>)
+ 800151a:	2200      	movs	r2, #0
+ 800151c:	701a      	strb	r2, [r3, #0]
 
             rightX = 0; rightY = 1;
- 80015fe:	4b1d      	ldr	r3, [pc, #116]	@ (8001674 <set_gravity_by_state+0xd8>)
- 8001600:	2200      	movs	r2, #0
- 8001602:	701a      	strb	r2, [r3, #0]
- 8001604:	4b1c      	ldr	r3, [pc, #112]	@ (8001678 <set_gravity_by_state+0xdc>)
- 8001606:	2201      	movs	r2, #1
- 8001608:	701a      	strb	r2, [r3, #0]
+ 800151e:	4b1d      	ldr	r3, [pc, #116]	@ (8001594 <set_gravity_by_state+0xd8>)
+ 8001520:	2200      	movs	r2, #0
+ 8001522:	701a      	strb	r2, [r3, #0]
+ 8001524:	4b1c      	ldr	r3, [pc, #112]	@ (8001598 <set_gravity_by_state+0xdc>)
+ 8001526:	2201      	movs	r2, #1
+ 8001528:	701a      	strb	r2, [r3, #0]
             break;
- 800160a:	e025      	b.n	8001658 <set_gravity_by_state+0xbc>
+ 800152a:	e025      	b.n	8001578 <set_gravity_by_state+0xbc>
 
         case 2:
             fwdX = -1; fwdY = 1;
- 800160c:	4b15      	ldr	r3, [pc, #84]	@ (8001664 <set_gravity_by_state+0xc8>)
- 800160e:	22ff      	movs	r2, #255	@ 0xff
- 8001610:	701a      	strb	r2, [r3, #0]
- 8001612:	4b15      	ldr	r3, [pc, #84]	@ (8001668 <set_gravity_by_state+0xcc>)
- 8001614:	2201      	movs	r2, #1
- 8001616:	701a      	strb	r2, [r3, #0]
+ 800152c:	4b15      	ldr	r3, [pc, #84]	@ (8001584 <set_gravity_by_state+0xc8>)
+ 800152e:	22ff      	movs	r2, #255	@ 0xff
+ 8001530:	701a      	strb	r2, [r3, #0]
+ 8001532:	4b15      	ldr	r3, [pc, #84]	@ (8001588 <set_gravity_by_state+0xcc>)
+ 8001534:	2201      	movs	r2, #1
+ 8001536:	701a      	strb	r2, [r3, #0]
 
             leftX = -1; leftY = 0;
- 8001618:	4b14      	ldr	r3, [pc, #80]	@ (800166c <set_gravity_by_state+0xd0>)
- 800161a:	22ff      	movs	r2, #255	@ 0xff
- 800161c:	701a      	strb	r2, [r3, #0]
- 800161e:	4b14      	ldr	r3, [pc, #80]	@ (8001670 <set_gravity_by_state+0xd4>)
- 8001620:	2200      	movs	r2, #0
- 8001622:	701a      	strb	r2, [r3, #0]
+ 8001538:	4b14      	ldr	r3, [pc, #80]	@ (800158c <set_gravity_by_state+0xd0>)
+ 800153a:	22ff      	movs	r2, #255	@ 0xff
+ 800153c:	701a      	strb	r2, [r3, #0]
+ 800153e:	4b14      	ldr	r3, [pc, #80]	@ (8001590 <set_gravity_by_state+0xd4>)
+ 8001540:	2200      	movs	r2, #0
+ 8001542:	701a      	strb	r2, [r3, #0]
 
             rightX = 0; rightY = 1;
- 8001624:	4b13      	ldr	r3, [pc, #76]	@ (8001674 <set_gravity_by_state+0xd8>)
- 8001626:	2200      	movs	r2, #0
- 8001628:	701a      	strb	r2, [r3, #0]
- 800162a:	4b13      	ldr	r3, [pc, #76]	@ (8001678 <set_gravity_by_state+0xdc>)
- 800162c:	2201      	movs	r2, #1
- 800162e:	701a      	strb	r2, [r3, #0]
+ 8001544:	4b13      	ldr	r3, [pc, #76]	@ (8001594 <set_gravity_by_state+0xd8>)
+ 8001546:	2200      	movs	r2, #0
+ 8001548:	701a      	strb	r2, [r3, #0]
+ 800154a:	4b13      	ldr	r3, [pc, #76]	@ (8001598 <set_gravity_by_state+0xdc>)
+ 800154c:	2201      	movs	r2, #1
+ 800154e:	701a      	strb	r2, [r3, #0]
             break;
- 8001630:	e012      	b.n	8001658 <set_gravity_by_state+0xbc>
+ 8001550:	e012      	b.n	8001578 <set_gravity_by_state+0xbc>
 
         case 3:
             fwdX = -1;  fwdY = -1;
- 8001632:	4b0c      	ldr	r3, [pc, #48]	@ (8001664 <set_gravity_by_state+0xc8>)
- 8001634:	22ff      	movs	r2, #255	@ 0xff
- 8001636:	701a      	strb	r2, [r3, #0]
- 8001638:	4b0b      	ldr	r3, [pc, #44]	@ (8001668 <set_gravity_by_state+0xcc>)
- 800163a:	22ff      	movs	r2, #255	@ 0xff
- 800163c:	701a      	strb	r2, [r3, #0]
+ 8001552:	4b0c      	ldr	r3, [pc, #48]	@ (8001584 <set_gravity_by_state+0xc8>)
+ 8001554:	22ff      	movs	r2, #255	@ 0xff
+ 8001556:	701a      	strb	r2, [r3, #0]
+ 8001558:	4b0b      	ldr	r3, [pc, #44]	@ (8001588 <set_gravity_by_state+0xcc>)
+ 800155a:	22ff      	movs	r2, #255	@ 0xff
+ 800155c:	701a      	strb	r2, [r3, #0]
 
             leftX = -1; leftY = 0;
- 800163e:	4b0b      	ldr	r3, [pc, #44]	@ (800166c <set_gravity_by_state+0xd0>)
- 8001640:	22ff      	movs	r2, #255	@ 0xff
- 8001642:	701a      	strb	r2, [r3, #0]
- 8001644:	4b0a      	ldr	r3, [pc, #40]	@ (8001670 <set_gravity_by_state+0xd4>)
- 8001646:	2200      	movs	r2, #0
- 8001648:	701a      	strb	r2, [r3, #0]
+ 800155e:	4b0b      	ldr	r3, [pc, #44]	@ (800158c <set_gravity_by_state+0xd0>)
+ 8001560:	22ff      	movs	r2, #255	@ 0xff
+ 8001562:	701a      	strb	r2, [r3, #0]
+ 8001564:	4b0a      	ldr	r3, [pc, #40]	@ (8001590 <set_gravity_by_state+0xd4>)
+ 8001566:	2200      	movs	r2, #0
+ 8001568:	701a      	strb	r2, [r3, #0]
 
             rightX = 0; rightY = -1;
- 800164a:	4b0a      	ldr	r3, [pc, #40]	@ (8001674 <set_gravity_by_state+0xd8>)
- 800164c:	2200      	movs	r2, #0
- 800164e:	701a      	strb	r2, [r3, #0]
- 8001650:	4b09      	ldr	r3, [pc, #36]	@ (8001678 <set_gravity_by_state+0xdc>)
- 8001652:	22ff      	movs	r2, #255	@ 0xff
- 8001654:	701a      	strb	r2, [r3, #0]
+ 800156a:	4b0a      	ldr	r3, [pc, #40]	@ (8001594 <set_gravity_by_state+0xd8>)
+ 800156c:	2200      	movs	r2, #0
+ 800156e:	701a      	strb	r2, [r3, #0]
+ 8001570:	4b09      	ldr	r3, [pc, #36]	@ (8001598 <set_gravity_by_state+0xdc>)
+ 8001572:	22ff      	movs	r2, #255	@ 0xff
+ 8001574:	701a      	strb	r2, [r3, #0]
             break;
- 8001656:	bf00      	nop
+ 8001576:	bf00      	nop
     }
 }
- 8001658:	bf00      	nop
- 800165a:	370c      	adds	r7, #12
- 800165c:	46bd      	mov	sp, r7
- 800165e:	bc80      	pop	{r7}
- 8001660:	4770      	bx	lr
- 8001662:	bf00      	nop
- 8001664:	200002e0 	.word	0x200002e0
- 8001668:	200002e1 	.word	0x200002e1
- 800166c:	200002e2 	.word	0x200002e2
- 8001670:	200002e3 	.word	0x200002e3
- 8001674:	200002e4 	.word	0x200002e4
- 8001678:	200002e5 	.word	0x200002e5
+ 8001578:	bf00      	nop
+ 800157a:	370c      	adds	r7, #12
+ 800157c:	46bd      	mov	sp, r7
+ 800157e:	bc80      	pop	{r7}
+ 8001580:	4770      	bx	lr
+ 8001582:	bf00      	nop
+ 8001584:	200002e0 	.word	0x200002e0
+ 8001588:	200002e1 	.word	0x200002e1
+ 800158c:	200002e2 	.word	0x200002e2
+ 8001590:	200002e3 	.word	0x200002e3
+ 8001594:	200002e4 	.word	0x200002e4
+ 8001598:	200002e5 	.word	0x200002e5
 
-0800167c <move_particle>:
+0800159c <move_particle>:
 
 /*------------Func: Move the particle at the coordinate (x,y) --------------------*/
 void move_particle(int x, int y){
- 800167c:	b580      	push	{r7, lr}
- 800167e:	b08a      	sub	sp, #40	@ 0x28
- 8001680:	af00      	add	r7, sp, #0
- 8001682:	6078      	str	r0, [r7, #4]
- 8001684:	6039      	str	r1, [r7, #0]
+ 800159c:	b580      	push	{r7, lr}
+ 800159e:	b08a      	sub	sp, #40	@ 0x28
+ 80015a0:	af00      	add	r7, sp, #0
+ 80015a2:	6078      	str	r0, [r7, #4]
+ 80015a4:	6039      	str	r1, [r7, #0]
 	if (world[x][y] == 0) return;
- 8001686:	4a5a      	ldr	r2, [pc, #360]	@ (80017f0 <move_particle+0x174>)
- 8001688:	687b      	ldr	r3, [r7, #4]
- 800168a:	011b      	lsls	r3, r3, #4
- 800168c:	441a      	add	r2, r3
- 800168e:	683b      	ldr	r3, [r7, #0]
- 8001690:	4413      	add	r3, r2
- 8001692:	781b      	ldrb	r3, [r3, #0]
- 8001694:	2b00      	cmp	r3, #0
- 8001696:	f000 80a5 	beq.w	80017e4 <move_particle+0x168>
+ 80015a6:	4a5a      	ldr	r2, [pc, #360]	@ (8001710 <move_particle+0x174>)
+ 80015a8:	687b      	ldr	r3, [r7, #4]
+ 80015aa:	011b      	lsls	r3, r3, #4
+ 80015ac:	441a      	add	r2, r3
+ 80015ae:	683b      	ldr	r3, [r7, #0]
+ 80015b0:	4413      	add	r3, r2
+ 80015b2:	781b      	ldrb	r3, [r3, #0]
+ 80015b4:	2b00      	cmp	r3, #0
+ 80015b6:	f000 80a5 	beq.w	8001704 <move_particle+0x168>
 	//go forward
 	int next_x = x + fwdX;
- 800169a:	4b56      	ldr	r3, [pc, #344]	@ (80017f4 <move_particle+0x178>)
- 800169c:	f993 3000 	ldrsb.w	r3, [r3]
- 80016a0:	461a      	mov	r2, r3
- 80016a2:	687b      	ldr	r3, [r7, #4]
- 80016a4:	4413      	add	r3, r2
- 80016a6:	627b      	str	r3, [r7, #36]	@ 0x24
+ 80015ba:	4b56      	ldr	r3, [pc, #344]	@ (8001714 <move_particle+0x178>)
+ 80015bc:	f993 3000 	ldrsb.w	r3, [r3]
+ 80015c0:	461a      	mov	r2, r3
+ 80015c2:	687b      	ldr	r3, [r7, #4]
+ 80015c4:	4413      	add	r3, r2
+ 80015c6:	627b      	str	r3, [r7, #36]	@ 0x24
 	int next_y = y + fwdY;
- 80016a8:	4b53      	ldr	r3, [pc, #332]	@ (80017f8 <move_particle+0x17c>)
- 80016aa:	f993 3000 	ldrsb.w	r3, [r3]
- 80016ae:	461a      	mov	r2, r3
- 80016b0:	683b      	ldr	r3, [r7, #0]
- 80016b2:	4413      	add	r3, r2
- 80016b4:	623b      	str	r3, [r7, #32]
+ 80015c8:	4b53      	ldr	r3, [pc, #332]	@ (8001718 <move_particle+0x17c>)
+ 80015ca:	f993 3000 	ldrsb.w	r3, [r3]
+ 80015ce:	461a      	mov	r2, r3
+ 80015d0:	683b      	ldr	r3, [r7, #0]
+ 80015d2:	4413      	add	r3, r2
+ 80015d4:	623b      	str	r3, [r7, #32]
 	//left
 	int lX= x+leftX;
- 80016b6:	4b51      	ldr	r3, [pc, #324]	@ (80017fc <move_particle+0x180>)
- 80016b8:	f993 3000 	ldrsb.w	r3, [r3]
- 80016bc:	461a      	mov	r2, r3
- 80016be:	687b      	ldr	r3, [r7, #4]
- 80016c0:	4413      	add	r3, r2
- 80016c2:	61fb      	str	r3, [r7, #28]
+ 80015d6:	4b51      	ldr	r3, [pc, #324]	@ (800171c <move_particle+0x180>)
+ 80015d8:	f993 3000 	ldrsb.w	r3, [r3]
+ 80015dc:	461a      	mov	r2, r3
+ 80015de:	687b      	ldr	r3, [r7, #4]
+ 80015e0:	4413      	add	r3, r2
+ 80015e2:	61fb      	str	r3, [r7, #28]
 	int lY= y+leftY;
- 80016c4:	4b4e      	ldr	r3, [pc, #312]	@ (8001800 <move_particle+0x184>)
- 80016c6:	f993 3000 	ldrsb.w	r3, [r3]
- 80016ca:	461a      	mov	r2, r3
- 80016cc:	683b      	ldr	r3, [r7, #0]
- 80016ce:	4413      	add	r3, r2
- 80016d0:	61bb      	str	r3, [r7, #24]
+ 80015e4:	4b4e      	ldr	r3, [pc, #312]	@ (8001720 <move_particle+0x184>)
+ 80015e6:	f993 3000 	ldrsb.w	r3, [r3]
+ 80015ea:	461a      	mov	r2, r3
+ 80015ec:	683b      	ldr	r3, [r7, #0]
+ 80015ee:	4413      	add	r3, r2
+ 80015f0:	61bb      	str	r3, [r7, #24]
 	//right
 	int rX= x+rightX;
- 80016d2:	4b4c      	ldr	r3, [pc, #304]	@ (8001804 <move_particle+0x188>)
- 80016d4:	f993 3000 	ldrsb.w	r3, [r3]
- 80016d8:	461a      	mov	r2, r3
- 80016da:	687b      	ldr	r3, [r7, #4]
- 80016dc:	4413      	add	r3, r2
- 80016de:	617b      	str	r3, [r7, #20]
+ 80015f2:	4b4c      	ldr	r3, [pc, #304]	@ (8001724 <move_particle+0x188>)
+ 80015f4:	f993 3000 	ldrsb.w	r3, [r3]
+ 80015f8:	461a      	mov	r2, r3
+ 80015fa:	687b      	ldr	r3, [r7, #4]
+ 80015fc:	4413      	add	r3, r2
+ 80015fe:	617b      	str	r3, [r7, #20]
 	int rY= y+rightY;
- 80016e0:	4b49      	ldr	r3, [pc, #292]	@ (8001808 <move_particle+0x18c>)
- 80016e2:	f993 3000 	ldrsb.w	r3, [r3]
- 80016e6:	461a      	mov	r2, r3
- 80016e8:	683b      	ldr	r3, [r7, #0]
- 80016ea:	4413      	add	r3, r2
- 80016ec:	613b      	str	r3, [r7, #16]
+ 8001600:	4b49      	ldr	r3, [pc, #292]	@ (8001728 <move_particle+0x18c>)
+ 8001602:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001606:	461a      	mov	r2, r3
+ 8001608:	683b      	ldr	r3, [r7, #0]
+ 800160a:	4413      	add	r3, r2
+ 800160c:	613b      	str	r3, [r7, #16]
 	if(can_move_to(next_x,next_y))
- 80016ee:	6a39      	ldr	r1, [r7, #32]
- 80016f0:	6a78      	ldr	r0, [r7, #36]	@ 0x24
- 80016f2:	f7ff fee7 	bl	80014c4 <can_move_to>
- 80016f6:	4603      	mov	r3, r0
- 80016f8:	2b00      	cmp	r3, #0
- 80016fa:	d010      	beq.n	800171e <move_particle+0xa2>
+ 800160e:	6a39      	ldr	r1, [r7, #32]
+ 8001610:	6a78      	ldr	r0, [r7, #36]	@ 0x24
+ 8001612:	f7ff fee7 	bl	80013e4 <can_move_to>
+ 8001616:	4603      	mov	r3, r0
+ 8001618:	2b00      	cmp	r3, #0
+ 800161a:	d010      	beq.n	800163e <move_particle+0xa2>
 	{
 		world[x][y] = 0;
- 80016fc:	4a3c      	ldr	r2, [pc, #240]	@ (80017f0 <move_particle+0x174>)
- 80016fe:	687b      	ldr	r3, [r7, #4]
- 8001700:	011b      	lsls	r3, r3, #4
- 8001702:	441a      	add	r2, r3
- 8001704:	683b      	ldr	r3, [r7, #0]
- 8001706:	4413      	add	r3, r2
- 8001708:	2200      	movs	r2, #0
- 800170a:	701a      	strb	r2, [r3, #0]
+ 800161c:	4a3c      	ldr	r2, [pc, #240]	@ (8001710 <move_particle+0x174>)
+ 800161e:	687b      	ldr	r3, [r7, #4]
+ 8001620:	011b      	lsls	r3, r3, #4
+ 8001622:	441a      	add	r2, r3
+ 8001624:	683b      	ldr	r3, [r7, #0]
+ 8001626:	4413      	add	r3, r2
+ 8001628:	2200      	movs	r2, #0
+ 800162a:	701a      	strb	r2, [r3, #0]
 		world[next_x][next_y] = 1;
- 800170c:	4a38      	ldr	r2, [pc, #224]	@ (80017f0 <move_particle+0x174>)
- 800170e:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
- 8001710:	011b      	lsls	r3, r3, #4
- 8001712:	441a      	add	r2, r3
- 8001714:	6a3b      	ldr	r3, [r7, #32]
- 8001716:	4413      	add	r3, r2
- 8001718:	2201      	movs	r2, #1
- 800171a:	701a      	strb	r2, [r3, #0]
+ 800162c:	4a38      	ldr	r2, [pc, #224]	@ (8001710 <move_particle+0x174>)
+ 800162e:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8001630:	011b      	lsls	r3, r3, #4
+ 8001632:	441a      	add	r2, r3
+ 8001634:	6a3b      	ldr	r3, [r7, #32]
+ 8001636:	4413      	add	r3, r2
+ 8001638:	2201      	movs	r2, #1
+ 800163a:	701a      	strb	r2, [r3, #0]
 		return;
- 800171c:	e065      	b.n	80017ea <move_particle+0x16e>
+ 800163c:	e065      	b.n	800170a <move_particle+0x16e>
 	}
 
 	bool can_left  = can_move_to(lX, lY);
- 800171e:	69b9      	ldr	r1, [r7, #24]
- 8001720:	69f8      	ldr	r0, [r7, #28]
- 8001722:	f7ff fecf 	bl	80014c4 <can_move_to>
- 8001726:	4603      	mov	r3, r0
- 8001728:	73fb      	strb	r3, [r7, #15]
+ 800163e:	69b9      	ldr	r1, [r7, #24]
+ 8001640:	69f8      	ldr	r0, [r7, #28]
+ 8001642:	f7ff fecf 	bl	80013e4 <can_move_to>
+ 8001646:	4603      	mov	r3, r0
+ 8001648:	73fb      	strb	r3, [r7, #15]
 	bool can_right = can_move_to(rX, rY);
- 800172a:	6939      	ldr	r1, [r7, #16]
- 800172c:	6978      	ldr	r0, [r7, #20]
- 800172e:	f7ff fec9 	bl	80014c4 <can_move_to>
- 8001732:	4603      	mov	r3, r0
- 8001734:	73bb      	strb	r3, [r7, #14]
+ 800164a:	6939      	ldr	r1, [r7, #16]
+ 800164c:	6978      	ldr	r0, [r7, #20]
+ 800164e:	f7ff fec9 	bl	80013e4 <can_move_to>
+ 8001652:	4603      	mov	r3, r0
+ 8001654:	73bb      	strb	r3, [r7, #14]
 
 	    if (can_left && can_right) {
- 8001736:	7bfb      	ldrb	r3, [r7, #15]
- 8001738:	2b00      	cmp	r3, #0
- 800173a:	d02b      	beq.n	8001794 <move_particle+0x118>
- 800173c:	7bbb      	ldrb	r3, [r7, #14]
- 800173e:	2b00      	cmp	r3, #0
- 8001740:	d028      	beq.n	8001794 <move_particle+0x118>
+ 8001656:	7bfb      	ldrb	r3, [r7, #15]
+ 8001658:	2b00      	cmp	r3, #0
+ 800165a:	d02b      	beq.n	80016b4 <move_particle+0x118>
+ 800165c:	7bbb      	ldrb	r3, [r7, #14]
+ 800165e:	2b00      	cmp	r3, #0
+ 8001660:	d028      	beq.n	80016b4 <move_particle+0x118>
 	        // make the random decision to make the sandclock more logical
 	        if (rand() % 2 == 0) {
- 8001742:	f003 fbff 	bl	8004f44 <rand>
- 8001746:	4603      	mov	r3, r0
- 8001748:	f003 0301 	and.w	r3, r3, #1
- 800174c:	2b00      	cmp	r3, #0
- 800174e:	d110      	bne.n	8001772 <move_particle+0xf6>
+ 8001662:	f003 fc6f 	bl	8004f44 <rand>
+ 8001666:	4603      	mov	r3, r0
+ 8001668:	f003 0301 	and.w	r3, r3, #1
+ 800166c:	2b00      	cmp	r3, #0
+ 800166e:	d110      	bne.n	8001692 <move_particle+0xf6>
 	            world[x][y] = 0; world[lX][lY] = 1;
- 8001750:	4a27      	ldr	r2, [pc, #156]	@ (80017f0 <move_particle+0x174>)
- 8001752:	687b      	ldr	r3, [r7, #4]
- 8001754:	011b      	lsls	r3, r3, #4
- 8001756:	441a      	add	r2, r3
- 8001758:	683b      	ldr	r3, [r7, #0]
- 800175a:	4413      	add	r3, r2
- 800175c:	2200      	movs	r2, #0
- 800175e:	701a      	strb	r2, [r3, #0]
- 8001760:	4a23      	ldr	r2, [pc, #140]	@ (80017f0 <move_particle+0x174>)
- 8001762:	69fb      	ldr	r3, [r7, #28]
- 8001764:	011b      	lsls	r3, r3, #4
- 8001766:	441a      	add	r2, r3
- 8001768:	69bb      	ldr	r3, [r7, #24]
- 800176a:	4413      	add	r3, r2
- 800176c:	2201      	movs	r2, #1
- 800176e:	701a      	strb	r2, [r3, #0]
+ 8001670:	4a27      	ldr	r2, [pc, #156]	@ (8001710 <move_particle+0x174>)
+ 8001672:	687b      	ldr	r3, [r7, #4]
+ 8001674:	011b      	lsls	r3, r3, #4
+ 8001676:	441a      	add	r2, r3
+ 8001678:	683b      	ldr	r3, [r7, #0]
+ 800167a:	4413      	add	r3, r2
+ 800167c:	2200      	movs	r2, #0
+ 800167e:	701a      	strb	r2, [r3, #0]
+ 8001680:	4a23      	ldr	r2, [pc, #140]	@ (8001710 <move_particle+0x174>)
+ 8001682:	69fb      	ldr	r3, [r7, #28]
+ 8001684:	011b      	lsls	r3, r3, #4
+ 8001686:	441a      	add	r2, r3
+ 8001688:	69bb      	ldr	r3, [r7, #24]
+ 800168a:	4413      	add	r3, r2
+ 800168c:	2201      	movs	r2, #1
+ 800168e:	701a      	strb	r2, [r3, #0]
 	        if (rand() % 2 == 0) {
- 8001770:	e03b      	b.n	80017ea <move_particle+0x16e>
+ 8001690:	e03b      	b.n	800170a <move_particle+0x16e>
 	        } else {
 	            world[x][y] = 0; world[rX][rY] = 1;
- 8001772:	4a1f      	ldr	r2, [pc, #124]	@ (80017f0 <move_particle+0x174>)
- 8001774:	687b      	ldr	r3, [r7, #4]
- 8001776:	011b      	lsls	r3, r3, #4
- 8001778:	441a      	add	r2, r3
- 800177a:	683b      	ldr	r3, [r7, #0]
- 800177c:	4413      	add	r3, r2
- 800177e:	2200      	movs	r2, #0
- 8001780:	701a      	strb	r2, [r3, #0]
- 8001782:	4a1b      	ldr	r2, [pc, #108]	@ (80017f0 <move_particle+0x174>)
- 8001784:	697b      	ldr	r3, [r7, #20]
- 8001786:	011b      	lsls	r3, r3, #4
- 8001788:	441a      	add	r2, r3
- 800178a:	693b      	ldr	r3, [r7, #16]
- 800178c:	4413      	add	r3, r2
- 800178e:	2201      	movs	r2, #1
- 8001790:	701a      	strb	r2, [r3, #0]
+ 8001692:	4a1f      	ldr	r2, [pc, #124]	@ (8001710 <move_particle+0x174>)
+ 8001694:	687b      	ldr	r3, [r7, #4]
+ 8001696:	011b      	lsls	r3, r3, #4
+ 8001698:	441a      	add	r2, r3
+ 800169a:	683b      	ldr	r3, [r7, #0]
+ 800169c:	4413      	add	r3, r2
+ 800169e:	2200      	movs	r2, #0
+ 80016a0:	701a      	strb	r2, [r3, #0]
+ 80016a2:	4a1b      	ldr	r2, [pc, #108]	@ (8001710 <move_particle+0x174>)
+ 80016a4:	697b      	ldr	r3, [r7, #20]
+ 80016a6:	011b      	lsls	r3, r3, #4
+ 80016a8:	441a      	add	r2, r3
+ 80016aa:	693b      	ldr	r3, [r7, #16]
+ 80016ac:	4413      	add	r3, r2
+ 80016ae:	2201      	movs	r2, #1
+ 80016b0:	701a      	strb	r2, [r3, #0]
 	        if (rand() % 2 == 0) {
- 8001792:	e02a      	b.n	80017ea <move_particle+0x16e>
+ 80016b2:	e02a      	b.n	800170a <move_particle+0x16e>
 	        }
 	    }
 	    else if (can_left) {
- 8001794:	7bfb      	ldrb	r3, [r7, #15]
- 8001796:	2b00      	cmp	r3, #0
- 8001798:	d010      	beq.n	80017bc <move_particle+0x140>
+ 80016b4:	7bfb      	ldrb	r3, [r7, #15]
+ 80016b6:	2b00      	cmp	r3, #0
+ 80016b8:	d010      	beq.n	80016dc <move_particle+0x140>
 	        world[x][y] = 0; world[lX][lY] = 1;
- 800179a:	4a15      	ldr	r2, [pc, #84]	@ (80017f0 <move_particle+0x174>)
- 800179c:	687b      	ldr	r3, [r7, #4]
- 800179e:	011b      	lsls	r3, r3, #4
- 80017a0:	441a      	add	r2, r3
- 80017a2:	683b      	ldr	r3, [r7, #0]
- 80017a4:	4413      	add	r3, r2
- 80017a6:	2200      	movs	r2, #0
- 80017a8:	701a      	strb	r2, [r3, #0]
- 80017aa:	4a11      	ldr	r2, [pc, #68]	@ (80017f0 <move_particle+0x174>)
- 80017ac:	69fb      	ldr	r3, [r7, #28]
- 80017ae:	011b      	lsls	r3, r3, #4
- 80017b0:	441a      	add	r2, r3
- 80017b2:	69bb      	ldr	r3, [r7, #24]
- 80017b4:	4413      	add	r3, r2
- 80017b6:	2201      	movs	r2, #1
- 80017b8:	701a      	strb	r2, [r3, #0]
- 80017ba:	e016      	b.n	80017ea <move_particle+0x16e>
+ 80016ba:	4a15      	ldr	r2, [pc, #84]	@ (8001710 <move_particle+0x174>)
+ 80016bc:	687b      	ldr	r3, [r7, #4]
+ 80016be:	011b      	lsls	r3, r3, #4
+ 80016c0:	441a      	add	r2, r3
+ 80016c2:	683b      	ldr	r3, [r7, #0]
+ 80016c4:	4413      	add	r3, r2
+ 80016c6:	2200      	movs	r2, #0
+ 80016c8:	701a      	strb	r2, [r3, #0]
+ 80016ca:	4a11      	ldr	r2, [pc, #68]	@ (8001710 <move_particle+0x174>)
+ 80016cc:	69fb      	ldr	r3, [r7, #28]
+ 80016ce:	011b      	lsls	r3, r3, #4
+ 80016d0:	441a      	add	r2, r3
+ 80016d2:	69bb      	ldr	r3, [r7, #24]
+ 80016d4:	4413      	add	r3, r2
+ 80016d6:	2201      	movs	r2, #1
+ 80016d8:	701a      	strb	r2, [r3, #0]
+ 80016da:	e016      	b.n	800170a <move_particle+0x16e>
 	    }
 	    else if (can_right) {
- 80017bc:	7bbb      	ldrb	r3, [r7, #14]
- 80017be:	2b00      	cmp	r3, #0
- 80017c0:	d012      	beq.n	80017e8 <move_particle+0x16c>
+ 80016dc:	7bbb      	ldrb	r3, [r7, #14]
+ 80016de:	2b00      	cmp	r3, #0
+ 80016e0:	d012      	beq.n	8001708 <move_particle+0x16c>
 	        world[x][y] = 0; world[rX][rY] = 1;
- 80017c2:	4a0b      	ldr	r2, [pc, #44]	@ (80017f0 <move_particle+0x174>)
- 80017c4:	687b      	ldr	r3, [r7, #4]
- 80017c6:	011b      	lsls	r3, r3, #4
- 80017c8:	441a      	add	r2, r3
- 80017ca:	683b      	ldr	r3, [r7, #0]
- 80017cc:	4413      	add	r3, r2
- 80017ce:	2200      	movs	r2, #0
- 80017d0:	701a      	strb	r2, [r3, #0]
- 80017d2:	4a07      	ldr	r2, [pc, #28]	@ (80017f0 <move_particle+0x174>)
- 80017d4:	697b      	ldr	r3, [r7, #20]
- 80017d6:	011b      	lsls	r3, r3, #4
- 80017d8:	441a      	add	r2, r3
- 80017da:	693b      	ldr	r3, [r7, #16]
- 80017dc:	4413      	add	r3, r2
- 80017de:	2201      	movs	r2, #1
- 80017e0:	701a      	strb	r2, [r3, #0]
- 80017e2:	e002      	b.n	80017ea <move_particle+0x16e>
+ 80016e2:	4a0b      	ldr	r2, [pc, #44]	@ (8001710 <move_particle+0x174>)
+ 80016e4:	687b      	ldr	r3, [r7, #4]
+ 80016e6:	011b      	lsls	r3, r3, #4
+ 80016e8:	441a      	add	r2, r3
+ 80016ea:	683b      	ldr	r3, [r7, #0]
+ 80016ec:	4413      	add	r3, r2
+ 80016ee:	2200      	movs	r2, #0
+ 80016f0:	701a      	strb	r2, [r3, #0]
+ 80016f2:	4a07      	ldr	r2, [pc, #28]	@ (8001710 <move_particle+0x174>)
+ 80016f4:	697b      	ldr	r3, [r7, #20]
+ 80016f6:	011b      	lsls	r3, r3, #4
+ 80016f8:	441a      	add	r2, r3
+ 80016fa:	693b      	ldr	r3, [r7, #16]
+ 80016fc:	4413      	add	r3, r2
+ 80016fe:	2201      	movs	r2, #1
+ 8001700:	701a      	strb	r2, [r3, #0]
+ 8001702:	e002      	b.n	800170a <move_particle+0x16e>
 	if (world[x][y] == 0) return;
- 80017e4:	bf00      	nop
- 80017e6:	e000      	b.n	80017ea <move_particle+0x16e>
+ 8001704:	bf00      	nop
+ 8001706:	e000      	b.n	800170a <move_particle+0x16e>
 	    }
 	    else{return;}
- 80017e8:	bf00      	nop
+ 8001708:	bf00      	nop
 }
- 80017ea:	3728      	adds	r7, #40	@ 0x28
- 80017ec:	46bd      	mov	sp, r7
- 80017ee:	bd80      	pop	{r7, pc}
- 80017f0:	20000178 	.word	0x20000178
- 80017f4:	200002e0 	.word	0x200002e0
- 80017f8:	200002e1 	.word	0x200002e1
- 80017fc:	200002e2 	.word	0x200002e2
- 8001800:	200002e3 	.word	0x200002e3
- 8001804:	200002e4 	.word	0x200002e4
- 8001808:	200002e5 	.word	0x200002e5
+ 800170a:	3728      	adds	r7, #40	@ 0x28
+ 800170c:	46bd      	mov	sp, r7
+ 800170e:	bd80      	pop	{r7, pc}
+ 8001710:	20000178 	.word	0x20000178
+ 8001714:	200002e0 	.word	0x200002e0
+ 8001718:	200002e1 	.word	0x200002e1
+ 800171c:	200002e2 	.word	0x200002e2
+ 8001720:	200002e3 	.word	0x200002e3
+ 8001724:	200002e4 	.word	0x200002e4
+ 8001728:	200002e5 	.word	0x200002e5
 
-0800180c <move_particle_state0upper>:
+0800172c <move_particle_state0upper>:
 
 //Func: also move the led but the upper matrix when we are at state 0 will not overflow to the lower
 //matrix. If we dont have this func, the led will flow out of control to the lower matrix when we finish every frame
 void move_particle_state0upper(int x, int y) //=state2below
 {
- 800180c:	b580      	push	{r7, lr}
- 800180e:	b088      	sub	sp, #32
- 8001810:	af00      	add	r7, sp, #0
- 8001812:	6078      	str	r0, [r7, #4]
- 8001814:	6039      	str	r1, [r7, #0]
+ 800172c:	b580      	push	{r7, lr}
+ 800172e:	b088      	sub	sp, #32
+ 8001730:	af00      	add	r7, sp, #0
+ 8001732:	6078      	str	r0, [r7, #4]
+ 8001734:	6039      	str	r1, [r7, #0]
 	if (world[x][y] == 0) return;
- 8001816:	4a47      	ldr	r2, [pc, #284]	@ (8001934 <move_particle_state0upper+0x128>)
- 8001818:	687b      	ldr	r3, [r7, #4]
- 800181a:	011b      	lsls	r3, r3, #4
- 800181c:	441a      	add	r2, r3
- 800181e:	683b      	ldr	r3, [r7, #0]
- 8001820:	4413      	add	r3, r2
- 8001822:	781b      	ldrb	r3, [r3, #0]
- 8001824:	2b00      	cmp	r3, #0
- 8001826:	d07e      	beq.n	8001926 <move_particle_state0upper+0x11a>
+ 8001736:	4a47      	ldr	r2, [pc, #284]	@ (8001854 <move_particle_state0upper+0x128>)
+ 8001738:	687b      	ldr	r3, [r7, #4]
+ 800173a:	011b      	lsls	r3, r3, #4
+ 800173c:	441a      	add	r2, r3
+ 800173e:	683b      	ldr	r3, [r7, #0]
+ 8001740:	4413      	add	r3, r2
+ 8001742:	781b      	ldrb	r3, [r3, #0]
+ 8001744:	2b00      	cmp	r3, #0
+ 8001746:	d07e      	beq.n	8001846 <move_particle_state0upper+0x11a>
 	int lX= x+leftX;
- 8001828:	4b43      	ldr	r3, [pc, #268]	@ (8001938 <move_particle_state0upper+0x12c>)
- 800182a:	f993 3000 	ldrsb.w	r3, [r3]
- 800182e:	461a      	mov	r2, r3
- 8001830:	687b      	ldr	r3, [r7, #4]
- 8001832:	4413      	add	r3, r2
- 8001834:	61fb      	str	r3, [r7, #28]
+ 8001748:	4b43      	ldr	r3, [pc, #268]	@ (8001858 <move_particle_state0upper+0x12c>)
+ 800174a:	f993 3000 	ldrsb.w	r3, [r3]
+ 800174e:	461a      	mov	r2, r3
+ 8001750:	687b      	ldr	r3, [r7, #4]
+ 8001752:	4413      	add	r3, r2
+ 8001754:	61fb      	str	r3, [r7, #28]
 	int lY= y+leftY;
- 8001836:	4b41      	ldr	r3, [pc, #260]	@ (800193c <move_particle_state0upper+0x130>)
- 8001838:	f993 3000 	ldrsb.w	r3, [r3]
- 800183c:	461a      	mov	r2, r3
- 800183e:	683b      	ldr	r3, [r7, #0]
- 8001840:	4413      	add	r3, r2
- 8001842:	61bb      	str	r3, [r7, #24]
+ 8001756:	4b41      	ldr	r3, [pc, #260]	@ (800185c <move_particle_state0upper+0x130>)
+ 8001758:	f993 3000 	ldrsb.w	r3, [r3]
+ 800175c:	461a      	mov	r2, r3
+ 800175e:	683b      	ldr	r3, [r7, #0]
+ 8001760:	4413      	add	r3, r2
+ 8001762:	61bb      	str	r3, [r7, #24]
 
 	int rX= x+rightX;
- 8001844:	4b3e      	ldr	r3, [pc, #248]	@ (8001940 <move_particle_state0upper+0x134>)
- 8001846:	f993 3000 	ldrsb.w	r3, [r3]
- 800184a:	461a      	mov	r2, r3
- 800184c:	687b      	ldr	r3, [r7, #4]
- 800184e:	4413      	add	r3, r2
- 8001850:	617b      	str	r3, [r7, #20]
+ 8001764:	4b3e      	ldr	r3, [pc, #248]	@ (8001860 <move_particle_state0upper+0x134>)
+ 8001766:	f993 3000 	ldrsb.w	r3, [r3]
+ 800176a:	461a      	mov	r2, r3
+ 800176c:	687b      	ldr	r3, [r7, #4]
+ 800176e:	4413      	add	r3, r2
+ 8001770:	617b      	str	r3, [r7, #20]
 	int rY= y+rightY;
- 8001852:	4b3c      	ldr	r3, [pc, #240]	@ (8001944 <move_particle_state0upper+0x138>)
- 8001854:	f993 3000 	ldrsb.w	r3, [r3]
- 8001858:	461a      	mov	r2, r3
- 800185a:	683b      	ldr	r3, [r7, #0]
- 800185c:	4413      	add	r3, r2
- 800185e:	613b      	str	r3, [r7, #16]
+ 8001772:	4b3c      	ldr	r3, [pc, #240]	@ (8001864 <move_particle_state0upper+0x138>)
+ 8001774:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001778:	461a      	mov	r2, r3
+ 800177a:	683b      	ldr	r3, [r7, #0]
+ 800177c:	4413      	add	r3, r2
+ 800177e:	613b      	str	r3, [r7, #16]
 
 	bool can_left  = can_move_to_state0upper(lX, lY);
- 8001860:	69b9      	ldr	r1, [r7, #24]
- 8001862:	69f8      	ldr	r0, [r7, #28]
- 8001864:	f7ff fe52 	bl	800150c <can_move_to_state0upper>
- 8001868:	4603      	mov	r3, r0
- 800186a:	73fb      	strb	r3, [r7, #15]
+ 8001780:	69b9      	ldr	r1, [r7, #24]
+ 8001782:	69f8      	ldr	r0, [r7, #28]
+ 8001784:	f7ff fe52 	bl	800142c <can_move_to_state0upper>
+ 8001788:	4603      	mov	r3, r0
+ 800178a:	73fb      	strb	r3, [r7, #15]
 	bool can_right = can_move_to_state0upper(rX, rY);
- 800186c:	6939      	ldr	r1, [r7, #16]
- 800186e:	6978      	ldr	r0, [r7, #20]
- 8001870:	f7ff fe4c 	bl	800150c <can_move_to_state0upper>
- 8001874:	4603      	mov	r3, r0
- 8001876:	73bb      	strb	r3, [r7, #14]
+ 800178c:	6939      	ldr	r1, [r7, #16]
+ 800178e:	6978      	ldr	r0, [r7, #20]
+ 8001790:	f7ff fe4c 	bl	800142c <can_move_to_state0upper>
+ 8001794:	4603      	mov	r3, r0
+ 8001796:	73bb      	strb	r3, [r7, #14]
 
 	    if (can_left && can_right) {
- 8001878:	7bfb      	ldrb	r3, [r7, #15]
- 800187a:	2b00      	cmp	r3, #0
- 800187c:	d02b      	beq.n	80018d6 <move_particle_state0upper+0xca>
- 800187e:	7bbb      	ldrb	r3, [r7, #14]
- 8001880:	2b00      	cmp	r3, #0
- 8001882:	d028      	beq.n	80018d6 <move_particle_state0upper+0xca>
+ 8001798:	7bfb      	ldrb	r3, [r7, #15]
+ 800179a:	2b00      	cmp	r3, #0
+ 800179c:	d02b      	beq.n	80017f6 <move_particle_state0upper+0xca>
+ 800179e:	7bbb      	ldrb	r3, [r7, #14]
+ 80017a0:	2b00      	cmp	r3, #0
+ 80017a2:	d028      	beq.n	80017f6 <move_particle_state0upper+0xca>
 	        if (rand() % 2 == 0) {
- 8001884:	f003 fb5e 	bl	8004f44 <rand>
- 8001888:	4603      	mov	r3, r0
- 800188a:	f003 0301 	and.w	r3, r3, #1
- 800188e:	2b00      	cmp	r3, #0
- 8001890:	d110      	bne.n	80018b4 <move_particle_state0upper+0xa8>
+ 80017a4:	f003 fbce 	bl	8004f44 <rand>
+ 80017a8:	4603      	mov	r3, r0
+ 80017aa:	f003 0301 	and.w	r3, r3, #1
+ 80017ae:	2b00      	cmp	r3, #0
+ 80017b0:	d110      	bne.n	80017d4 <move_particle_state0upper+0xa8>
 	            world[x][y] = 0; world[lX][lY] = 1;
- 8001892:	4a28      	ldr	r2, [pc, #160]	@ (8001934 <move_particle_state0upper+0x128>)
- 8001894:	687b      	ldr	r3, [r7, #4]
- 8001896:	011b      	lsls	r3, r3, #4
- 8001898:	441a      	add	r2, r3
- 800189a:	683b      	ldr	r3, [r7, #0]
- 800189c:	4413      	add	r3, r2
- 800189e:	2200      	movs	r2, #0
- 80018a0:	701a      	strb	r2, [r3, #0]
- 80018a2:	4a24      	ldr	r2, [pc, #144]	@ (8001934 <move_particle_state0upper+0x128>)
- 80018a4:	69fb      	ldr	r3, [r7, #28]
- 80018a6:	011b      	lsls	r3, r3, #4
- 80018a8:	441a      	add	r2, r3
- 80018aa:	69bb      	ldr	r3, [r7, #24]
- 80018ac:	4413      	add	r3, r2
- 80018ae:	2201      	movs	r2, #1
- 80018b0:	701a      	strb	r2, [r3, #0]
+ 80017b2:	4a28      	ldr	r2, [pc, #160]	@ (8001854 <move_particle_state0upper+0x128>)
+ 80017b4:	687b      	ldr	r3, [r7, #4]
+ 80017b6:	011b      	lsls	r3, r3, #4
+ 80017b8:	441a      	add	r2, r3
+ 80017ba:	683b      	ldr	r3, [r7, #0]
+ 80017bc:	4413      	add	r3, r2
+ 80017be:	2200      	movs	r2, #0
+ 80017c0:	701a      	strb	r2, [r3, #0]
+ 80017c2:	4a24      	ldr	r2, [pc, #144]	@ (8001854 <move_particle_state0upper+0x128>)
+ 80017c4:	69fb      	ldr	r3, [r7, #28]
+ 80017c6:	011b      	lsls	r3, r3, #4
+ 80017c8:	441a      	add	r2, r3
+ 80017ca:	69bb      	ldr	r3, [r7, #24]
+ 80017cc:	4413      	add	r3, r2
+ 80017ce:	2201      	movs	r2, #1
+ 80017d0:	701a      	strb	r2, [r3, #0]
 	        if (rand() % 2 == 0) {
- 80018b2:	e03b      	b.n	800192c <move_particle_state0upper+0x120>
+ 80017d2:	e03b      	b.n	800184c <move_particle_state0upper+0x120>
 	        } else {
 	            world[x][y] = 0; world[rX][rY] = 1;
- 80018b4:	4a1f      	ldr	r2, [pc, #124]	@ (8001934 <move_particle_state0upper+0x128>)
- 80018b6:	687b      	ldr	r3, [r7, #4]
- 80018b8:	011b      	lsls	r3, r3, #4
- 80018ba:	441a      	add	r2, r3
- 80018bc:	683b      	ldr	r3, [r7, #0]
- 80018be:	4413      	add	r3, r2
- 80018c0:	2200      	movs	r2, #0
- 80018c2:	701a      	strb	r2, [r3, #0]
- 80018c4:	4a1b      	ldr	r2, [pc, #108]	@ (8001934 <move_particle_state0upper+0x128>)
- 80018c6:	697b      	ldr	r3, [r7, #20]
- 80018c8:	011b      	lsls	r3, r3, #4
- 80018ca:	441a      	add	r2, r3
- 80018cc:	693b      	ldr	r3, [r7, #16]
- 80018ce:	4413      	add	r3, r2
- 80018d0:	2201      	movs	r2, #1
- 80018d2:	701a      	strb	r2, [r3, #0]
+ 80017d4:	4a1f      	ldr	r2, [pc, #124]	@ (8001854 <move_particle_state0upper+0x128>)
+ 80017d6:	687b      	ldr	r3, [r7, #4]
+ 80017d8:	011b      	lsls	r3, r3, #4
+ 80017da:	441a      	add	r2, r3
+ 80017dc:	683b      	ldr	r3, [r7, #0]
+ 80017de:	4413      	add	r3, r2
+ 80017e0:	2200      	movs	r2, #0
+ 80017e2:	701a      	strb	r2, [r3, #0]
+ 80017e4:	4a1b      	ldr	r2, [pc, #108]	@ (8001854 <move_particle_state0upper+0x128>)
+ 80017e6:	697b      	ldr	r3, [r7, #20]
+ 80017e8:	011b      	lsls	r3, r3, #4
+ 80017ea:	441a      	add	r2, r3
+ 80017ec:	693b      	ldr	r3, [r7, #16]
+ 80017ee:	4413      	add	r3, r2
+ 80017f0:	2201      	movs	r2, #1
+ 80017f2:	701a      	strb	r2, [r3, #0]
 	        if (rand() % 2 == 0) {
- 80018d4:	e02a      	b.n	800192c <move_particle_state0upper+0x120>
+ 80017f4:	e02a      	b.n	800184c <move_particle_state0upper+0x120>
 	        }
 	    }
 	    else if (can_left) {
- 80018d6:	7bfb      	ldrb	r3, [r7, #15]
- 80018d8:	2b00      	cmp	r3, #0
- 80018da:	d010      	beq.n	80018fe <move_particle_state0upper+0xf2>
+ 80017f6:	7bfb      	ldrb	r3, [r7, #15]
+ 80017f8:	2b00      	cmp	r3, #0
+ 80017fa:	d010      	beq.n	800181e <move_particle_state0upper+0xf2>
 	        world[x][y] = 0; world[lX][lY] = 1;
- 80018dc:	4a15      	ldr	r2, [pc, #84]	@ (8001934 <move_particle_state0upper+0x128>)
- 80018de:	687b      	ldr	r3, [r7, #4]
- 80018e0:	011b      	lsls	r3, r3, #4
- 80018e2:	441a      	add	r2, r3
- 80018e4:	683b      	ldr	r3, [r7, #0]
- 80018e6:	4413      	add	r3, r2
- 80018e8:	2200      	movs	r2, #0
- 80018ea:	701a      	strb	r2, [r3, #0]
- 80018ec:	4a11      	ldr	r2, [pc, #68]	@ (8001934 <move_particle_state0upper+0x128>)
- 80018ee:	69fb      	ldr	r3, [r7, #28]
- 80018f0:	011b      	lsls	r3, r3, #4
- 80018f2:	441a      	add	r2, r3
- 80018f4:	69bb      	ldr	r3, [r7, #24]
- 80018f6:	4413      	add	r3, r2
- 80018f8:	2201      	movs	r2, #1
- 80018fa:	701a      	strb	r2, [r3, #0]
- 80018fc:	e016      	b.n	800192c <move_particle_state0upper+0x120>
+ 80017fc:	4a15      	ldr	r2, [pc, #84]	@ (8001854 <move_particle_state0upper+0x128>)
+ 80017fe:	687b      	ldr	r3, [r7, #4]
+ 8001800:	011b      	lsls	r3, r3, #4
+ 8001802:	441a      	add	r2, r3
+ 8001804:	683b      	ldr	r3, [r7, #0]
+ 8001806:	4413      	add	r3, r2
+ 8001808:	2200      	movs	r2, #0
+ 800180a:	701a      	strb	r2, [r3, #0]
+ 800180c:	4a11      	ldr	r2, [pc, #68]	@ (8001854 <move_particle_state0upper+0x128>)
+ 800180e:	69fb      	ldr	r3, [r7, #28]
+ 8001810:	011b      	lsls	r3, r3, #4
+ 8001812:	441a      	add	r2, r3
+ 8001814:	69bb      	ldr	r3, [r7, #24]
+ 8001816:	4413      	add	r3, r2
+ 8001818:	2201      	movs	r2, #1
+ 800181a:	701a      	strb	r2, [r3, #0]
+ 800181c:	e016      	b.n	800184c <move_particle_state0upper+0x120>
 	    }
 	    else if (can_right) {
- 80018fe:	7bbb      	ldrb	r3, [r7, #14]
- 8001900:	2b00      	cmp	r3, #0
- 8001902:	d012      	beq.n	800192a <move_particle_state0upper+0x11e>
+ 800181e:	7bbb      	ldrb	r3, [r7, #14]
+ 8001820:	2b00      	cmp	r3, #0
+ 8001822:	d012      	beq.n	800184a <move_particle_state0upper+0x11e>
 	        world[x][y] = 0; world[rX][rY] = 1;
- 8001904:	4a0b      	ldr	r2, [pc, #44]	@ (8001934 <move_particle_state0upper+0x128>)
- 8001906:	687b      	ldr	r3, [r7, #4]
- 8001908:	011b      	lsls	r3, r3, #4
- 800190a:	441a      	add	r2, r3
- 800190c:	683b      	ldr	r3, [r7, #0]
- 800190e:	4413      	add	r3, r2
- 8001910:	2200      	movs	r2, #0
- 8001912:	701a      	strb	r2, [r3, #0]
- 8001914:	4a07      	ldr	r2, [pc, #28]	@ (8001934 <move_particle_state0upper+0x128>)
- 8001916:	697b      	ldr	r3, [r7, #20]
- 8001918:	011b      	lsls	r3, r3, #4
- 800191a:	441a      	add	r2, r3
- 800191c:	693b      	ldr	r3, [r7, #16]
- 800191e:	4413      	add	r3, r2
- 8001920:	2201      	movs	r2, #1
- 8001922:	701a      	strb	r2, [r3, #0]
- 8001924:	e002      	b.n	800192c <move_particle_state0upper+0x120>
+ 8001824:	4a0b      	ldr	r2, [pc, #44]	@ (8001854 <move_particle_state0upper+0x128>)
+ 8001826:	687b      	ldr	r3, [r7, #4]
+ 8001828:	011b      	lsls	r3, r3, #4
+ 800182a:	441a      	add	r2, r3
+ 800182c:	683b      	ldr	r3, [r7, #0]
+ 800182e:	4413      	add	r3, r2
+ 8001830:	2200      	movs	r2, #0
+ 8001832:	701a      	strb	r2, [r3, #0]
+ 8001834:	4a07      	ldr	r2, [pc, #28]	@ (8001854 <move_particle_state0upper+0x128>)
+ 8001836:	697b      	ldr	r3, [r7, #20]
+ 8001838:	011b      	lsls	r3, r3, #4
+ 800183a:	441a      	add	r2, r3
+ 800183c:	693b      	ldr	r3, [r7, #16]
+ 800183e:	4413      	add	r3, r2
+ 8001840:	2201      	movs	r2, #1
+ 8001842:	701a      	strb	r2, [r3, #0]
+ 8001844:	e002      	b.n	800184c <move_particle_state0upper+0x120>
 	if (world[x][y] == 0) return;
- 8001926:	bf00      	nop
- 8001928:	e000      	b.n	800192c <move_particle_state0upper+0x120>
+ 8001846:	bf00      	nop
+ 8001848:	e000      	b.n	800184c <move_particle_state0upper+0x120>
 	    }
 	    else{return;}
- 800192a:	bf00      	nop
+ 800184a:	bf00      	nop
 }
- 800192c:	3720      	adds	r7, #32
- 800192e:	46bd      	mov	sp, r7
- 8001930:	bd80      	pop	{r7, pc}
- 8001932:	bf00      	nop
- 8001934:	20000178 	.word	0x20000178
- 8001938:	200002e2 	.word	0x200002e2
- 800193c:	200002e3 	.word	0x200002e3
- 8001940:	200002e4 	.word	0x200002e4
- 8001944:	200002e5 	.word	0x200002e5
+ 800184c:	3720      	adds	r7, #32
+ 800184e:	46bd      	mov	sp, r7
+ 8001850:	bd80      	pop	{r7, pc}
+ 8001852:	bf00      	nop
+ 8001854:	20000178 	.word	0x20000178
+ 8001858:	200002e2 	.word	0x200002e2
+ 800185c:	200002e3 	.word	0x200002e3
+ 8001860:	200002e4 	.word	0x200002e4
+ 8001864:	200002e5 	.word	0x200002e5
 
-08001948 <move_particle_state2upper>:
+08001868 <move_particle_state2upper>:
 
 
 void move_particle_state2upper(int x, int y) //=state2below
 {
- 8001948:	b580      	push	{r7, lr}
- 800194a:	b088      	sub	sp, #32
- 800194c:	af00      	add	r7, sp, #0
- 800194e:	6078      	str	r0, [r7, #4]
- 8001950:	6039      	str	r1, [r7, #0]
+ 8001868:	b580      	push	{r7, lr}
+ 800186a:	b088      	sub	sp, #32
+ 800186c:	af00      	add	r7, sp, #0
+ 800186e:	6078      	str	r0, [r7, #4]
+ 8001870:	6039      	str	r1, [r7, #0]
 	if (world[x][y] == 0) return;
- 8001952:	4a47      	ldr	r2, [pc, #284]	@ (8001a70 <move_particle_state2upper+0x128>)
- 8001954:	687b      	ldr	r3, [r7, #4]
- 8001956:	011b      	lsls	r3, r3, #4
- 8001958:	441a      	add	r2, r3
- 800195a:	683b      	ldr	r3, [r7, #0]
- 800195c:	4413      	add	r3, r2
- 800195e:	781b      	ldrb	r3, [r3, #0]
- 8001960:	2b00      	cmp	r3, #0
- 8001962:	d07e      	beq.n	8001a62 <move_particle_state2upper+0x11a>
+ 8001872:	4a47      	ldr	r2, [pc, #284]	@ (8001990 <move_particle_state2upper+0x128>)
+ 8001874:	687b      	ldr	r3, [r7, #4]
+ 8001876:	011b      	lsls	r3, r3, #4
+ 8001878:	441a      	add	r2, r3
+ 800187a:	683b      	ldr	r3, [r7, #0]
+ 800187c:	4413      	add	r3, r2
+ 800187e:	781b      	ldrb	r3, [r3, #0]
+ 8001880:	2b00      	cmp	r3, #0
+ 8001882:	d07e      	beq.n	8001982 <move_particle_state2upper+0x11a>
 	int lX= x+leftX;
- 8001964:	4b43      	ldr	r3, [pc, #268]	@ (8001a74 <move_particle_state2upper+0x12c>)
- 8001966:	f993 3000 	ldrsb.w	r3, [r3]
- 800196a:	461a      	mov	r2, r3
- 800196c:	687b      	ldr	r3, [r7, #4]
- 800196e:	4413      	add	r3, r2
- 8001970:	61fb      	str	r3, [r7, #28]
+ 8001884:	4b43      	ldr	r3, [pc, #268]	@ (8001994 <move_particle_state2upper+0x12c>)
+ 8001886:	f993 3000 	ldrsb.w	r3, [r3]
+ 800188a:	461a      	mov	r2, r3
+ 800188c:	687b      	ldr	r3, [r7, #4]
+ 800188e:	4413      	add	r3, r2
+ 8001890:	61fb      	str	r3, [r7, #28]
 	int lY= y+leftY;
- 8001972:	4b41      	ldr	r3, [pc, #260]	@ (8001a78 <move_particle_state2upper+0x130>)
- 8001974:	f993 3000 	ldrsb.w	r3, [r3]
- 8001978:	461a      	mov	r2, r3
- 800197a:	683b      	ldr	r3, [r7, #0]
- 800197c:	4413      	add	r3, r2
- 800197e:	61bb      	str	r3, [r7, #24]
+ 8001892:	4b41      	ldr	r3, [pc, #260]	@ (8001998 <move_particle_state2upper+0x130>)
+ 8001894:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001898:	461a      	mov	r2, r3
+ 800189a:	683b      	ldr	r3, [r7, #0]
+ 800189c:	4413      	add	r3, r2
+ 800189e:	61bb      	str	r3, [r7, #24]
 
 	int rX= x+rightX;
- 8001980:	4b3e      	ldr	r3, [pc, #248]	@ (8001a7c <move_particle_state2upper+0x134>)
- 8001982:	f993 3000 	ldrsb.w	r3, [r3]
- 8001986:	461a      	mov	r2, r3
- 8001988:	687b      	ldr	r3, [r7, #4]
- 800198a:	4413      	add	r3, r2
- 800198c:	617b      	str	r3, [r7, #20]
+ 80018a0:	4b3e      	ldr	r3, [pc, #248]	@ (800199c <move_particle_state2upper+0x134>)
+ 80018a2:	f993 3000 	ldrsb.w	r3, [r3]
+ 80018a6:	461a      	mov	r2, r3
+ 80018a8:	687b      	ldr	r3, [r7, #4]
+ 80018aa:	4413      	add	r3, r2
+ 80018ac:	617b      	str	r3, [r7, #20]
 	int rY= y+rightY;
- 800198e:	4b3c      	ldr	r3, [pc, #240]	@ (8001a80 <move_particle_state2upper+0x138>)
- 8001990:	f993 3000 	ldrsb.w	r3, [r3]
- 8001994:	461a      	mov	r2, r3
- 8001996:	683b      	ldr	r3, [r7, #0]
- 8001998:	4413      	add	r3, r2
- 800199a:	613b      	str	r3, [r7, #16]
+ 80018ae:	4b3c      	ldr	r3, [pc, #240]	@ (80019a0 <move_particle_state2upper+0x138>)
+ 80018b0:	f993 3000 	ldrsb.w	r3, [r3]
+ 80018b4:	461a      	mov	r2, r3
+ 80018b6:	683b      	ldr	r3, [r7, #0]
+ 80018b8:	4413      	add	r3, r2
+ 80018ba:	613b      	str	r3, [r7, #16]
 
 	bool can_left  = can_move_to_state0below(lX, lY);
- 800199c:	69b9      	ldr	r1, [r7, #24]
- 800199e:	69f8      	ldr	r0, [r7, #28]
- 80019a0:	f7ff fdd8 	bl	8001554 <can_move_to_state0below>
- 80019a4:	4603      	mov	r3, r0
- 80019a6:	73fb      	strb	r3, [r7, #15]
+ 80018bc:	69b9      	ldr	r1, [r7, #24]
+ 80018be:	69f8      	ldr	r0, [r7, #28]
+ 80018c0:	f7ff fdd8 	bl	8001474 <can_move_to_state0below>
+ 80018c4:	4603      	mov	r3, r0
+ 80018c6:	73fb      	strb	r3, [r7, #15]
 	bool can_right = can_move_to_state0below(rX, rY);
- 80019a8:	6939      	ldr	r1, [r7, #16]
- 80019aa:	6978      	ldr	r0, [r7, #20]
- 80019ac:	f7ff fdd2 	bl	8001554 <can_move_to_state0below>
- 80019b0:	4603      	mov	r3, r0
- 80019b2:	73bb      	strb	r3, [r7, #14]
+ 80018c8:	6939      	ldr	r1, [r7, #16]
+ 80018ca:	6978      	ldr	r0, [r7, #20]
+ 80018cc:	f7ff fdd2 	bl	8001474 <can_move_to_state0below>
+ 80018d0:	4603      	mov	r3, r0
+ 80018d2:	73bb      	strb	r3, [r7, #14]
 
 	    if (can_left && can_right) {
- 80019b4:	7bfb      	ldrb	r3, [r7, #15]
- 80019b6:	2b00      	cmp	r3, #0
- 80019b8:	d02b      	beq.n	8001a12 <move_particle_state2upper+0xca>
- 80019ba:	7bbb      	ldrb	r3, [r7, #14]
- 80019bc:	2b00      	cmp	r3, #0
- 80019be:	d028      	beq.n	8001a12 <move_particle_state2upper+0xca>
+ 80018d4:	7bfb      	ldrb	r3, [r7, #15]
+ 80018d6:	2b00      	cmp	r3, #0
+ 80018d8:	d02b      	beq.n	8001932 <move_particle_state2upper+0xca>
+ 80018da:	7bbb      	ldrb	r3, [r7, #14]
+ 80018dc:	2b00      	cmp	r3, #0
+ 80018de:	d028      	beq.n	8001932 <move_particle_state2upper+0xca>
 
 	    	if (rand() % 2 == 0) {
- 80019c0:	f003 fac0 	bl	8004f44 <rand>
- 80019c4:	4603      	mov	r3, r0
- 80019c6:	f003 0301 	and.w	r3, r3, #1
- 80019ca:	2b00      	cmp	r3, #0
- 80019cc:	d110      	bne.n	80019f0 <move_particle_state2upper+0xa8>
+ 80018e0:	f003 fb30 	bl	8004f44 <rand>
+ 80018e4:	4603      	mov	r3, r0
+ 80018e6:	f003 0301 	and.w	r3, r3, #1
+ 80018ea:	2b00      	cmp	r3, #0
+ 80018ec:	d110      	bne.n	8001910 <move_particle_state2upper+0xa8>
 	            world[x][y] = 0; world[lX][lY] = 1;
- 80019ce:	4a28      	ldr	r2, [pc, #160]	@ (8001a70 <move_particle_state2upper+0x128>)
- 80019d0:	687b      	ldr	r3, [r7, #4]
- 80019d2:	011b      	lsls	r3, r3, #4
- 80019d4:	441a      	add	r2, r3
- 80019d6:	683b      	ldr	r3, [r7, #0]
- 80019d8:	4413      	add	r3, r2
- 80019da:	2200      	movs	r2, #0
- 80019dc:	701a      	strb	r2, [r3, #0]
- 80019de:	4a24      	ldr	r2, [pc, #144]	@ (8001a70 <move_particle_state2upper+0x128>)
- 80019e0:	69fb      	ldr	r3, [r7, #28]
- 80019e2:	011b      	lsls	r3, r3, #4
- 80019e4:	441a      	add	r2, r3
- 80019e6:	69bb      	ldr	r3, [r7, #24]
- 80019e8:	4413      	add	r3, r2
- 80019ea:	2201      	movs	r2, #1
- 80019ec:	701a      	strb	r2, [r3, #0]
+ 80018ee:	4a28      	ldr	r2, [pc, #160]	@ (8001990 <move_particle_state2upper+0x128>)
+ 80018f0:	687b      	ldr	r3, [r7, #4]
+ 80018f2:	011b      	lsls	r3, r3, #4
+ 80018f4:	441a      	add	r2, r3
+ 80018f6:	683b      	ldr	r3, [r7, #0]
+ 80018f8:	4413      	add	r3, r2
+ 80018fa:	2200      	movs	r2, #0
+ 80018fc:	701a      	strb	r2, [r3, #0]
+ 80018fe:	4a24      	ldr	r2, [pc, #144]	@ (8001990 <move_particle_state2upper+0x128>)
+ 8001900:	69fb      	ldr	r3, [r7, #28]
+ 8001902:	011b      	lsls	r3, r3, #4
+ 8001904:	441a      	add	r2, r3
+ 8001906:	69bb      	ldr	r3, [r7, #24]
+ 8001908:	4413      	add	r3, r2
+ 800190a:	2201      	movs	r2, #1
+ 800190c:	701a      	strb	r2, [r3, #0]
 	    	if (rand() % 2 == 0) {
- 80019ee:	e03b      	b.n	8001a68 <move_particle_state2upper+0x120>
+ 800190e:	e03b      	b.n	8001988 <move_particle_state2upper+0x120>
 	        } else {
 	            world[x][y] = 0; world[rX][rY] = 1;
- 80019f0:	4a1f      	ldr	r2, [pc, #124]	@ (8001a70 <move_particle_state2upper+0x128>)
- 80019f2:	687b      	ldr	r3, [r7, #4]
- 80019f4:	011b      	lsls	r3, r3, #4
- 80019f6:	441a      	add	r2, r3
- 80019f8:	683b      	ldr	r3, [r7, #0]
- 80019fa:	4413      	add	r3, r2
- 80019fc:	2200      	movs	r2, #0
- 80019fe:	701a      	strb	r2, [r3, #0]
- 8001a00:	4a1b      	ldr	r2, [pc, #108]	@ (8001a70 <move_particle_state2upper+0x128>)
- 8001a02:	697b      	ldr	r3, [r7, #20]
- 8001a04:	011b      	lsls	r3, r3, #4
- 8001a06:	441a      	add	r2, r3
- 8001a08:	693b      	ldr	r3, [r7, #16]
- 8001a0a:	4413      	add	r3, r2
- 8001a0c:	2201      	movs	r2, #1
- 8001a0e:	701a      	strb	r2, [r3, #0]
+ 8001910:	4a1f      	ldr	r2, [pc, #124]	@ (8001990 <move_particle_state2upper+0x128>)
+ 8001912:	687b      	ldr	r3, [r7, #4]
+ 8001914:	011b      	lsls	r3, r3, #4
+ 8001916:	441a      	add	r2, r3
+ 8001918:	683b      	ldr	r3, [r7, #0]
+ 800191a:	4413      	add	r3, r2
+ 800191c:	2200      	movs	r2, #0
+ 800191e:	701a      	strb	r2, [r3, #0]
+ 8001920:	4a1b      	ldr	r2, [pc, #108]	@ (8001990 <move_particle_state2upper+0x128>)
+ 8001922:	697b      	ldr	r3, [r7, #20]
+ 8001924:	011b      	lsls	r3, r3, #4
+ 8001926:	441a      	add	r2, r3
+ 8001928:	693b      	ldr	r3, [r7, #16]
+ 800192a:	4413      	add	r3, r2
+ 800192c:	2201      	movs	r2, #1
+ 800192e:	701a      	strb	r2, [r3, #0]
 	    	if (rand() % 2 == 0) {
- 8001a10:	e02a      	b.n	8001a68 <move_particle_state2upper+0x120>
+ 8001930:	e02a      	b.n	8001988 <move_particle_state2upper+0x120>
 	        }
 	    }
 	    else if (can_left) {
- 8001a12:	7bfb      	ldrb	r3, [r7, #15]
- 8001a14:	2b00      	cmp	r3, #0
- 8001a16:	d010      	beq.n	8001a3a <move_particle_state2upper+0xf2>
+ 8001932:	7bfb      	ldrb	r3, [r7, #15]
+ 8001934:	2b00      	cmp	r3, #0
+ 8001936:	d010      	beq.n	800195a <move_particle_state2upper+0xf2>
 
 	    	world[x][y] = 0; world[lX][lY] = 1;
- 8001a18:	4a15      	ldr	r2, [pc, #84]	@ (8001a70 <move_particle_state2upper+0x128>)
- 8001a1a:	687b      	ldr	r3, [r7, #4]
- 8001a1c:	011b      	lsls	r3, r3, #4
- 8001a1e:	441a      	add	r2, r3
- 8001a20:	683b      	ldr	r3, [r7, #0]
- 8001a22:	4413      	add	r3, r2
- 8001a24:	2200      	movs	r2, #0
- 8001a26:	701a      	strb	r2, [r3, #0]
- 8001a28:	4a11      	ldr	r2, [pc, #68]	@ (8001a70 <move_particle_state2upper+0x128>)
- 8001a2a:	69fb      	ldr	r3, [r7, #28]
- 8001a2c:	011b      	lsls	r3, r3, #4
- 8001a2e:	441a      	add	r2, r3
- 8001a30:	69bb      	ldr	r3, [r7, #24]
- 8001a32:	4413      	add	r3, r2
- 8001a34:	2201      	movs	r2, #1
- 8001a36:	701a      	strb	r2, [r3, #0]
- 8001a38:	e016      	b.n	8001a68 <move_particle_state2upper+0x120>
+ 8001938:	4a15      	ldr	r2, [pc, #84]	@ (8001990 <move_particle_state2upper+0x128>)
+ 800193a:	687b      	ldr	r3, [r7, #4]
+ 800193c:	011b      	lsls	r3, r3, #4
+ 800193e:	441a      	add	r2, r3
+ 8001940:	683b      	ldr	r3, [r7, #0]
+ 8001942:	4413      	add	r3, r2
+ 8001944:	2200      	movs	r2, #0
+ 8001946:	701a      	strb	r2, [r3, #0]
+ 8001948:	4a11      	ldr	r2, [pc, #68]	@ (8001990 <move_particle_state2upper+0x128>)
+ 800194a:	69fb      	ldr	r3, [r7, #28]
+ 800194c:	011b      	lsls	r3, r3, #4
+ 800194e:	441a      	add	r2, r3
+ 8001950:	69bb      	ldr	r3, [r7, #24]
+ 8001952:	4413      	add	r3, r2
+ 8001954:	2201      	movs	r2, #1
+ 8001956:	701a      	strb	r2, [r3, #0]
+ 8001958:	e016      	b.n	8001988 <move_particle_state2upper+0x120>
 	    }
 	    else if (can_right) {
- 8001a3a:	7bbb      	ldrb	r3, [r7, #14]
- 8001a3c:	2b00      	cmp	r3, #0
- 8001a3e:	d012      	beq.n	8001a66 <move_particle_state2upper+0x11e>
+ 800195a:	7bbb      	ldrb	r3, [r7, #14]
+ 800195c:	2b00      	cmp	r3, #0
+ 800195e:	d012      	beq.n	8001986 <move_particle_state2upper+0x11e>
 
 	    	world[x][y] = 0; world[rX][rY] = 1;
- 8001a40:	4a0b      	ldr	r2, [pc, #44]	@ (8001a70 <move_particle_state2upper+0x128>)
- 8001a42:	687b      	ldr	r3, [r7, #4]
- 8001a44:	011b      	lsls	r3, r3, #4
- 8001a46:	441a      	add	r2, r3
- 8001a48:	683b      	ldr	r3, [r7, #0]
- 8001a4a:	4413      	add	r3, r2
- 8001a4c:	2200      	movs	r2, #0
- 8001a4e:	701a      	strb	r2, [r3, #0]
- 8001a50:	4a07      	ldr	r2, [pc, #28]	@ (8001a70 <move_particle_state2upper+0x128>)
- 8001a52:	697b      	ldr	r3, [r7, #20]
- 8001a54:	011b      	lsls	r3, r3, #4
- 8001a56:	441a      	add	r2, r3
- 8001a58:	693b      	ldr	r3, [r7, #16]
- 8001a5a:	4413      	add	r3, r2
- 8001a5c:	2201      	movs	r2, #1
- 8001a5e:	701a      	strb	r2, [r3, #0]
- 8001a60:	e002      	b.n	8001a68 <move_particle_state2upper+0x120>
+ 8001960:	4a0b      	ldr	r2, [pc, #44]	@ (8001990 <move_particle_state2upper+0x128>)
+ 8001962:	687b      	ldr	r3, [r7, #4]
+ 8001964:	011b      	lsls	r3, r3, #4
+ 8001966:	441a      	add	r2, r3
+ 8001968:	683b      	ldr	r3, [r7, #0]
+ 800196a:	4413      	add	r3, r2
+ 800196c:	2200      	movs	r2, #0
+ 800196e:	701a      	strb	r2, [r3, #0]
+ 8001970:	4a07      	ldr	r2, [pc, #28]	@ (8001990 <move_particle_state2upper+0x128>)
+ 8001972:	697b      	ldr	r3, [r7, #20]
+ 8001974:	011b      	lsls	r3, r3, #4
+ 8001976:	441a      	add	r2, r3
+ 8001978:	693b      	ldr	r3, [r7, #16]
+ 800197a:	4413      	add	r3, r2
+ 800197c:	2201      	movs	r2, #1
+ 800197e:	701a      	strb	r2, [r3, #0]
+ 8001980:	e002      	b.n	8001988 <move_particle_state2upper+0x120>
 	if (world[x][y] == 0) return;
- 8001a62:	bf00      	nop
- 8001a64:	e000      	b.n	8001a68 <move_particle_state2upper+0x120>
+ 8001982:	bf00      	nop
+ 8001984:	e000      	b.n	8001988 <move_particle_state2upper+0x120>
 	    }
 	    else{return;}
- 8001a66:	bf00      	nop
+ 8001986:	bf00      	nop
 }
- 8001a68:	3720      	adds	r7, #32
- 8001a6a:	46bd      	mov	sp, r7
- 8001a6c:	bd80      	pop	{r7, pc}
- 8001a6e:	bf00      	nop
- 8001a70:	20000178 	.word	0x20000178
- 8001a74:	200002e2 	.word	0x200002e2
- 8001a78:	200002e3 	.word	0x200002e3
- 8001a7c:	200002e4 	.word	0x200002e4
- 8001a80:	200002e5 	.word	0x200002e5
+ 8001988:	3720      	adds	r7, #32
+ 800198a:	46bd      	mov	sp, r7
+ 800198c:	bd80      	pop	{r7, pc}
+ 800198e:	bf00      	nop
+ 8001990:	20000178 	.word	0x20000178
+ 8001994:	200002e2 	.word	0x200002e2
+ 8001998:	200002e3 	.word	0x200002e3
+ 800199c:	200002e4 	.word	0x200002e4
+ 80019a0:	200002e5 	.word	0x200002e5
 
-08001a84 <move_particle_state0below>:
+080019a4 <move_particle_state0below>:
 
 void move_particle_state0below(int x, int y) //=state2 upper
 {
- 8001a84:	b580      	push	{r7, lr}
- 8001a86:	b08a      	sub	sp, #40	@ 0x28
- 8001a88:	af00      	add	r7, sp, #0
- 8001a8a:	6078      	str	r0, [r7, #4]
- 8001a8c:	6039      	str	r1, [r7, #0]
+ 80019a4:	b580      	push	{r7, lr}
+ 80019a6:	b08a      	sub	sp, #40	@ 0x28
+ 80019a8:	af00      	add	r7, sp, #0
+ 80019aa:	6078      	str	r0, [r7, #4]
+ 80019ac:	6039      	str	r1, [r7, #0]
 	if (world[x][y] == 0) return;
- 8001a8e:	4a5a      	ldr	r2, [pc, #360]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001a90:	687b      	ldr	r3, [r7, #4]
- 8001a92:	011b      	lsls	r3, r3, #4
- 8001a94:	441a      	add	r2, r3
- 8001a96:	683b      	ldr	r3, [r7, #0]
- 8001a98:	4413      	add	r3, r2
- 8001a9a:	781b      	ldrb	r3, [r3, #0]
- 8001a9c:	2b00      	cmp	r3, #0
- 8001a9e:	f000 80a5 	beq.w	8001bec <move_particle_state0below+0x168>
+ 80019ae:	4a5a      	ldr	r2, [pc, #360]	@ (8001b18 <move_particle_state0below+0x174>)
+ 80019b0:	687b      	ldr	r3, [r7, #4]
+ 80019b2:	011b      	lsls	r3, r3, #4
+ 80019b4:	441a      	add	r2, r3
+ 80019b6:	683b      	ldr	r3, [r7, #0]
+ 80019b8:	4413      	add	r3, r2
+ 80019ba:	781b      	ldrb	r3, [r3, #0]
+ 80019bc:	2b00      	cmp	r3, #0
+ 80019be:	f000 80a5 	beq.w	8001b0c <move_particle_state0below+0x168>
 	int next_x = x + fwdX;
- 8001aa2:	4b56      	ldr	r3, [pc, #344]	@ (8001bfc <move_particle_state0below+0x178>)
- 8001aa4:	f993 3000 	ldrsb.w	r3, [r3]
- 8001aa8:	461a      	mov	r2, r3
- 8001aaa:	687b      	ldr	r3, [r7, #4]
- 8001aac:	4413      	add	r3, r2
- 8001aae:	627b      	str	r3, [r7, #36]	@ 0x24
+ 80019c2:	4b56      	ldr	r3, [pc, #344]	@ (8001b1c <move_particle_state0below+0x178>)
+ 80019c4:	f993 3000 	ldrsb.w	r3, [r3]
+ 80019c8:	461a      	mov	r2, r3
+ 80019ca:	687b      	ldr	r3, [r7, #4]
+ 80019cc:	4413      	add	r3, r2
+ 80019ce:	627b      	str	r3, [r7, #36]	@ 0x24
 	int next_y = y + fwdY;
- 8001ab0:	4b53      	ldr	r3, [pc, #332]	@ (8001c00 <move_particle_state0below+0x17c>)
- 8001ab2:	f993 3000 	ldrsb.w	r3, [r3]
- 8001ab6:	461a      	mov	r2, r3
- 8001ab8:	683b      	ldr	r3, [r7, #0]
- 8001aba:	4413      	add	r3, r2
- 8001abc:	623b      	str	r3, [r7, #32]
+ 80019d0:	4b53      	ldr	r3, [pc, #332]	@ (8001b20 <move_particle_state0below+0x17c>)
+ 80019d2:	f993 3000 	ldrsb.w	r3, [r3]
+ 80019d6:	461a      	mov	r2, r3
+ 80019d8:	683b      	ldr	r3, [r7, #0]
+ 80019da:	4413      	add	r3, r2
+ 80019dc:	623b      	str	r3, [r7, #32]
 
 	int lX= x+leftX;
- 8001abe:	4b51      	ldr	r3, [pc, #324]	@ (8001c04 <move_particle_state0below+0x180>)
- 8001ac0:	f993 3000 	ldrsb.w	r3, [r3]
- 8001ac4:	461a      	mov	r2, r3
- 8001ac6:	687b      	ldr	r3, [r7, #4]
- 8001ac8:	4413      	add	r3, r2
- 8001aca:	61fb      	str	r3, [r7, #28]
+ 80019de:	4b51      	ldr	r3, [pc, #324]	@ (8001b24 <move_particle_state0below+0x180>)
+ 80019e0:	f993 3000 	ldrsb.w	r3, [r3]
+ 80019e4:	461a      	mov	r2, r3
+ 80019e6:	687b      	ldr	r3, [r7, #4]
+ 80019e8:	4413      	add	r3, r2
+ 80019ea:	61fb      	str	r3, [r7, #28]
 	int lY= y+leftY;
- 8001acc:	4b4e      	ldr	r3, [pc, #312]	@ (8001c08 <move_particle_state0below+0x184>)
- 8001ace:	f993 3000 	ldrsb.w	r3, [r3]
- 8001ad2:	461a      	mov	r2, r3
- 8001ad4:	683b      	ldr	r3, [r7, #0]
- 8001ad6:	4413      	add	r3, r2
- 8001ad8:	61bb      	str	r3, [r7, #24]
+ 80019ec:	4b4e      	ldr	r3, [pc, #312]	@ (8001b28 <move_particle_state0below+0x184>)
+ 80019ee:	f993 3000 	ldrsb.w	r3, [r3]
+ 80019f2:	461a      	mov	r2, r3
+ 80019f4:	683b      	ldr	r3, [r7, #0]
+ 80019f6:	4413      	add	r3, r2
+ 80019f8:	61bb      	str	r3, [r7, #24]
 
 	int rX= x+rightX;
- 8001ada:	4b4c      	ldr	r3, [pc, #304]	@ (8001c0c <move_particle_state0below+0x188>)
- 8001adc:	f993 3000 	ldrsb.w	r3, [r3]
- 8001ae0:	461a      	mov	r2, r3
- 8001ae2:	687b      	ldr	r3, [r7, #4]
- 8001ae4:	4413      	add	r3, r2
- 8001ae6:	617b      	str	r3, [r7, #20]
+ 80019fa:	4b4c      	ldr	r3, [pc, #304]	@ (8001b2c <move_particle_state0below+0x188>)
+ 80019fc:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001a00:	461a      	mov	r2, r3
+ 8001a02:	687b      	ldr	r3, [r7, #4]
+ 8001a04:	4413      	add	r3, r2
+ 8001a06:	617b      	str	r3, [r7, #20]
 	int rY= y+rightY;
- 8001ae8:	4b49      	ldr	r3, [pc, #292]	@ (8001c10 <move_particle_state0below+0x18c>)
- 8001aea:	f993 3000 	ldrsb.w	r3, [r3]
- 8001aee:	461a      	mov	r2, r3
- 8001af0:	683b      	ldr	r3, [r7, #0]
- 8001af2:	4413      	add	r3, r2
- 8001af4:	613b      	str	r3, [r7, #16]
+ 8001a08:	4b49      	ldr	r3, [pc, #292]	@ (8001b30 <move_particle_state0below+0x18c>)
+ 8001a0a:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001a0e:	461a      	mov	r2, r3
+ 8001a10:	683b      	ldr	r3, [r7, #0]
+ 8001a12:	4413      	add	r3, r2
+ 8001a14:	613b      	str	r3, [r7, #16]
 	if(can_move_to(next_x,next_y))
- 8001af6:	6a39      	ldr	r1, [r7, #32]
- 8001af8:	6a78      	ldr	r0, [r7, #36]	@ 0x24
- 8001afa:	f7ff fce3 	bl	80014c4 <can_move_to>
- 8001afe:	4603      	mov	r3, r0
- 8001b00:	2b00      	cmp	r3, #0
- 8001b02:	d010      	beq.n	8001b26 <move_particle_state0below+0xa2>
+ 8001a16:	6a39      	ldr	r1, [r7, #32]
+ 8001a18:	6a78      	ldr	r0, [r7, #36]	@ 0x24
+ 8001a1a:	f7ff fce3 	bl	80013e4 <can_move_to>
+ 8001a1e:	4603      	mov	r3, r0
+ 8001a20:	2b00      	cmp	r3, #0
+ 8001a22:	d010      	beq.n	8001a46 <move_particle_state0below+0xa2>
 	{
 		world[x][y] = 0;
- 8001b04:	4a3c      	ldr	r2, [pc, #240]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001b06:	687b      	ldr	r3, [r7, #4]
- 8001b08:	011b      	lsls	r3, r3, #4
- 8001b0a:	441a      	add	r2, r3
- 8001b0c:	683b      	ldr	r3, [r7, #0]
- 8001b0e:	4413      	add	r3, r2
- 8001b10:	2200      	movs	r2, #0
- 8001b12:	701a      	strb	r2, [r3, #0]
+ 8001a24:	4a3c      	ldr	r2, [pc, #240]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001a26:	687b      	ldr	r3, [r7, #4]
+ 8001a28:	011b      	lsls	r3, r3, #4
+ 8001a2a:	441a      	add	r2, r3
+ 8001a2c:	683b      	ldr	r3, [r7, #0]
+ 8001a2e:	4413      	add	r3, r2
+ 8001a30:	2200      	movs	r2, #0
+ 8001a32:	701a      	strb	r2, [r3, #0]
 		world[next_x][next_y] = 1;
- 8001b14:	4a38      	ldr	r2, [pc, #224]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001b16:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
- 8001b18:	011b      	lsls	r3, r3, #4
- 8001b1a:	441a      	add	r2, r3
- 8001b1c:	6a3b      	ldr	r3, [r7, #32]
- 8001b1e:	4413      	add	r3, r2
- 8001b20:	2201      	movs	r2, #1
- 8001b22:	701a      	strb	r2, [r3, #0]
+ 8001a34:	4a38      	ldr	r2, [pc, #224]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001a36:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8001a38:	011b      	lsls	r3, r3, #4
+ 8001a3a:	441a      	add	r2, r3
+ 8001a3c:	6a3b      	ldr	r3, [r7, #32]
+ 8001a3e:	4413      	add	r3, r2
+ 8001a40:	2201      	movs	r2, #1
+ 8001a42:	701a      	strb	r2, [r3, #0]
 		return;
- 8001b24:	e065      	b.n	8001bf2 <move_particle_state0below+0x16e>
+ 8001a44:	e065      	b.n	8001b12 <move_particle_state0below+0x16e>
 	}
 
 	bool can_left  = can_move_to_state0below(lX, lY);
- 8001b26:	69b9      	ldr	r1, [r7, #24]
- 8001b28:	69f8      	ldr	r0, [r7, #28]
- 8001b2a:	f7ff fd13 	bl	8001554 <can_move_to_state0below>
- 8001b2e:	4603      	mov	r3, r0
- 8001b30:	73fb      	strb	r3, [r7, #15]
+ 8001a46:	69b9      	ldr	r1, [r7, #24]
+ 8001a48:	69f8      	ldr	r0, [r7, #28]
+ 8001a4a:	f7ff fd13 	bl	8001474 <can_move_to_state0below>
+ 8001a4e:	4603      	mov	r3, r0
+ 8001a50:	73fb      	strb	r3, [r7, #15]
 	bool can_right = can_move_to_state0below(rX, rY);
- 8001b32:	6939      	ldr	r1, [r7, #16]
- 8001b34:	6978      	ldr	r0, [r7, #20]
- 8001b36:	f7ff fd0d 	bl	8001554 <can_move_to_state0below>
- 8001b3a:	4603      	mov	r3, r0
- 8001b3c:	73bb      	strb	r3, [r7, #14]
+ 8001a52:	6939      	ldr	r1, [r7, #16]
+ 8001a54:	6978      	ldr	r0, [r7, #20]
+ 8001a56:	f7ff fd0d 	bl	8001474 <can_move_to_state0below>
+ 8001a5a:	4603      	mov	r3, r0
+ 8001a5c:	73bb      	strb	r3, [r7, #14]
 
 	    if (can_left && can_right) {
- 8001b3e:	7bfb      	ldrb	r3, [r7, #15]
- 8001b40:	2b00      	cmp	r3, #0
- 8001b42:	d02b      	beq.n	8001b9c <move_particle_state0below+0x118>
- 8001b44:	7bbb      	ldrb	r3, [r7, #14]
- 8001b46:	2b00      	cmp	r3, #0
- 8001b48:	d028      	beq.n	8001b9c <move_particle_state0below+0x118>
+ 8001a5e:	7bfb      	ldrb	r3, [r7, #15]
+ 8001a60:	2b00      	cmp	r3, #0
+ 8001a62:	d02b      	beq.n	8001abc <move_particle_state0below+0x118>
+ 8001a64:	7bbb      	ldrb	r3, [r7, #14]
+ 8001a66:	2b00      	cmp	r3, #0
+ 8001a68:	d028      	beq.n	8001abc <move_particle_state0below+0x118>
 
 	        if (rand() % 2 == 0) {
- 8001b4a:	f003 f9fb 	bl	8004f44 <rand>
- 8001b4e:	4603      	mov	r3, r0
- 8001b50:	f003 0301 	and.w	r3, r3, #1
- 8001b54:	2b00      	cmp	r3, #0
- 8001b56:	d110      	bne.n	8001b7a <move_particle_state0below+0xf6>
+ 8001a6a:	f003 fa6b 	bl	8004f44 <rand>
+ 8001a6e:	4603      	mov	r3, r0
+ 8001a70:	f003 0301 	and.w	r3, r3, #1
+ 8001a74:	2b00      	cmp	r3, #0
+ 8001a76:	d110      	bne.n	8001a9a <move_particle_state0below+0xf6>
 	            world[x][y] = 0; world[lX][lY] = 1;
- 8001b58:	4a27      	ldr	r2, [pc, #156]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001b5a:	687b      	ldr	r3, [r7, #4]
- 8001b5c:	011b      	lsls	r3, r3, #4
- 8001b5e:	441a      	add	r2, r3
- 8001b60:	683b      	ldr	r3, [r7, #0]
- 8001b62:	4413      	add	r3, r2
- 8001b64:	2200      	movs	r2, #0
- 8001b66:	701a      	strb	r2, [r3, #0]
- 8001b68:	4a23      	ldr	r2, [pc, #140]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001b6a:	69fb      	ldr	r3, [r7, #28]
- 8001b6c:	011b      	lsls	r3, r3, #4
- 8001b6e:	441a      	add	r2, r3
- 8001b70:	69bb      	ldr	r3, [r7, #24]
- 8001b72:	4413      	add	r3, r2
- 8001b74:	2201      	movs	r2, #1
- 8001b76:	701a      	strb	r2, [r3, #0]
+ 8001a78:	4a27      	ldr	r2, [pc, #156]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001a7a:	687b      	ldr	r3, [r7, #4]
+ 8001a7c:	011b      	lsls	r3, r3, #4
+ 8001a7e:	441a      	add	r2, r3
+ 8001a80:	683b      	ldr	r3, [r7, #0]
+ 8001a82:	4413      	add	r3, r2
+ 8001a84:	2200      	movs	r2, #0
+ 8001a86:	701a      	strb	r2, [r3, #0]
+ 8001a88:	4a23      	ldr	r2, [pc, #140]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001a8a:	69fb      	ldr	r3, [r7, #28]
+ 8001a8c:	011b      	lsls	r3, r3, #4
+ 8001a8e:	441a      	add	r2, r3
+ 8001a90:	69bb      	ldr	r3, [r7, #24]
+ 8001a92:	4413      	add	r3, r2
+ 8001a94:	2201      	movs	r2, #1
+ 8001a96:	701a      	strb	r2, [r3, #0]
 	        if (rand() % 2 == 0) {
- 8001b78:	e03b      	b.n	8001bf2 <move_particle_state0below+0x16e>
+ 8001a98:	e03b      	b.n	8001b12 <move_particle_state0below+0x16e>
 	        } else {
 	            world[x][y] = 0; world[rX][rY] = 1;
- 8001b7a:	4a1f      	ldr	r2, [pc, #124]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001b7c:	687b      	ldr	r3, [r7, #4]
- 8001b7e:	011b      	lsls	r3, r3, #4
- 8001b80:	441a      	add	r2, r3
- 8001b82:	683b      	ldr	r3, [r7, #0]
- 8001b84:	4413      	add	r3, r2
- 8001b86:	2200      	movs	r2, #0
- 8001b88:	701a      	strb	r2, [r3, #0]
- 8001b8a:	4a1b      	ldr	r2, [pc, #108]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001b8c:	697b      	ldr	r3, [r7, #20]
- 8001b8e:	011b      	lsls	r3, r3, #4
- 8001b90:	441a      	add	r2, r3
- 8001b92:	693b      	ldr	r3, [r7, #16]
- 8001b94:	4413      	add	r3, r2
- 8001b96:	2201      	movs	r2, #1
- 8001b98:	701a      	strb	r2, [r3, #0]
+ 8001a9a:	4a1f      	ldr	r2, [pc, #124]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001a9c:	687b      	ldr	r3, [r7, #4]
+ 8001a9e:	011b      	lsls	r3, r3, #4
+ 8001aa0:	441a      	add	r2, r3
+ 8001aa2:	683b      	ldr	r3, [r7, #0]
+ 8001aa4:	4413      	add	r3, r2
+ 8001aa6:	2200      	movs	r2, #0
+ 8001aa8:	701a      	strb	r2, [r3, #0]
+ 8001aaa:	4a1b      	ldr	r2, [pc, #108]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001aac:	697b      	ldr	r3, [r7, #20]
+ 8001aae:	011b      	lsls	r3, r3, #4
+ 8001ab0:	441a      	add	r2, r3
+ 8001ab2:	693b      	ldr	r3, [r7, #16]
+ 8001ab4:	4413      	add	r3, r2
+ 8001ab6:	2201      	movs	r2, #1
+ 8001ab8:	701a      	strb	r2, [r3, #0]
 	        if (rand() % 2 == 0) {
- 8001b9a:	e02a      	b.n	8001bf2 <move_particle_state0below+0x16e>
+ 8001aba:	e02a      	b.n	8001b12 <move_particle_state0below+0x16e>
 	        }
 	    }
 	    else if (can_left) {
- 8001b9c:	7bfb      	ldrb	r3, [r7, #15]
- 8001b9e:	2b00      	cmp	r3, #0
- 8001ba0:	d010      	beq.n	8001bc4 <move_particle_state0below+0x140>
+ 8001abc:	7bfb      	ldrb	r3, [r7, #15]
+ 8001abe:	2b00      	cmp	r3, #0
+ 8001ac0:	d010      	beq.n	8001ae4 <move_particle_state0below+0x140>
 
 	        world[x][y] = 0; world[lX][lY] = 1;
- 8001ba2:	4a15      	ldr	r2, [pc, #84]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001ba4:	687b      	ldr	r3, [r7, #4]
- 8001ba6:	011b      	lsls	r3, r3, #4
- 8001ba8:	441a      	add	r2, r3
- 8001baa:	683b      	ldr	r3, [r7, #0]
- 8001bac:	4413      	add	r3, r2
- 8001bae:	2200      	movs	r2, #0
- 8001bb0:	701a      	strb	r2, [r3, #0]
- 8001bb2:	4a11      	ldr	r2, [pc, #68]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001bb4:	69fb      	ldr	r3, [r7, #28]
- 8001bb6:	011b      	lsls	r3, r3, #4
- 8001bb8:	441a      	add	r2, r3
- 8001bba:	69bb      	ldr	r3, [r7, #24]
- 8001bbc:	4413      	add	r3, r2
- 8001bbe:	2201      	movs	r2, #1
- 8001bc0:	701a      	strb	r2, [r3, #0]
- 8001bc2:	e016      	b.n	8001bf2 <move_particle_state0below+0x16e>
+ 8001ac2:	4a15      	ldr	r2, [pc, #84]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001ac4:	687b      	ldr	r3, [r7, #4]
+ 8001ac6:	011b      	lsls	r3, r3, #4
+ 8001ac8:	441a      	add	r2, r3
+ 8001aca:	683b      	ldr	r3, [r7, #0]
+ 8001acc:	4413      	add	r3, r2
+ 8001ace:	2200      	movs	r2, #0
+ 8001ad0:	701a      	strb	r2, [r3, #0]
+ 8001ad2:	4a11      	ldr	r2, [pc, #68]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001ad4:	69fb      	ldr	r3, [r7, #28]
+ 8001ad6:	011b      	lsls	r3, r3, #4
+ 8001ad8:	441a      	add	r2, r3
+ 8001ada:	69bb      	ldr	r3, [r7, #24]
+ 8001adc:	4413      	add	r3, r2
+ 8001ade:	2201      	movs	r2, #1
+ 8001ae0:	701a      	strb	r2, [r3, #0]
+ 8001ae2:	e016      	b.n	8001b12 <move_particle_state0below+0x16e>
 	    }
 	    else if (can_right) {
- 8001bc4:	7bbb      	ldrb	r3, [r7, #14]
- 8001bc6:	2b00      	cmp	r3, #0
- 8001bc8:	d012      	beq.n	8001bf0 <move_particle_state0below+0x16c>
+ 8001ae4:	7bbb      	ldrb	r3, [r7, #14]
+ 8001ae6:	2b00      	cmp	r3, #0
+ 8001ae8:	d012      	beq.n	8001b10 <move_particle_state0below+0x16c>
 
 	        world[x][y] = 0; world[rX][rY] = 1;
- 8001bca:	4a0b      	ldr	r2, [pc, #44]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001bcc:	687b      	ldr	r3, [r7, #4]
- 8001bce:	011b      	lsls	r3, r3, #4
- 8001bd0:	441a      	add	r2, r3
- 8001bd2:	683b      	ldr	r3, [r7, #0]
- 8001bd4:	4413      	add	r3, r2
- 8001bd6:	2200      	movs	r2, #0
- 8001bd8:	701a      	strb	r2, [r3, #0]
- 8001bda:	4a07      	ldr	r2, [pc, #28]	@ (8001bf8 <move_particle_state0below+0x174>)
- 8001bdc:	697b      	ldr	r3, [r7, #20]
- 8001bde:	011b      	lsls	r3, r3, #4
- 8001be0:	441a      	add	r2, r3
- 8001be2:	693b      	ldr	r3, [r7, #16]
- 8001be4:	4413      	add	r3, r2
- 8001be6:	2201      	movs	r2, #1
- 8001be8:	701a      	strb	r2, [r3, #0]
- 8001bea:	e002      	b.n	8001bf2 <move_particle_state0below+0x16e>
+ 8001aea:	4a0b      	ldr	r2, [pc, #44]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001aec:	687b      	ldr	r3, [r7, #4]
+ 8001aee:	011b      	lsls	r3, r3, #4
+ 8001af0:	441a      	add	r2, r3
+ 8001af2:	683b      	ldr	r3, [r7, #0]
+ 8001af4:	4413      	add	r3, r2
+ 8001af6:	2200      	movs	r2, #0
+ 8001af8:	701a      	strb	r2, [r3, #0]
+ 8001afa:	4a07      	ldr	r2, [pc, #28]	@ (8001b18 <move_particle_state0below+0x174>)
+ 8001afc:	697b      	ldr	r3, [r7, #20]
+ 8001afe:	011b      	lsls	r3, r3, #4
+ 8001b00:	441a      	add	r2, r3
+ 8001b02:	693b      	ldr	r3, [r7, #16]
+ 8001b04:	4413      	add	r3, r2
+ 8001b06:	2201      	movs	r2, #1
+ 8001b08:	701a      	strb	r2, [r3, #0]
+ 8001b0a:	e002      	b.n	8001b12 <move_particle_state0below+0x16e>
 	if (world[x][y] == 0) return;
- 8001bec:	bf00      	nop
- 8001bee:	e000      	b.n	8001bf2 <move_particle_state0below+0x16e>
+ 8001b0c:	bf00      	nop
+ 8001b0e:	e000      	b.n	8001b12 <move_particle_state0below+0x16e>
 	    }
 	    else{return;}
- 8001bf0:	bf00      	nop
+ 8001b10:	bf00      	nop
 
 }
- 8001bf2:	3728      	adds	r7, #40	@ 0x28
- 8001bf4:	46bd      	mov	sp, r7
- 8001bf6:	bd80      	pop	{r7, pc}
- 8001bf8:	20000178 	.word	0x20000178
- 8001bfc:	200002e0 	.word	0x200002e0
- 8001c00:	200002e1 	.word	0x200002e1
- 8001c04:	200002e2 	.word	0x200002e2
- 8001c08:	200002e3 	.word	0x200002e3
- 8001c0c:	200002e4 	.word	0x200002e4
- 8001c10:	200002e5 	.word	0x200002e5
+ 8001b12:	3728      	adds	r7, #40	@ 0x28
+ 8001b14:	46bd      	mov	sp, r7
+ 8001b16:	bd80      	pop	{r7, pc}
+ 8001b18:	20000178 	.word	0x20000178
+ 8001b1c:	200002e0 	.word	0x200002e0
+ 8001b20:	200002e1 	.word	0x200002e1
+ 8001b24:	200002e2 	.word	0x200002e2
+ 8001b28:	200002e3 	.word	0x200002e3
+ 8001b2c:	200002e4 	.word	0x200002e4
+ 8001b30:	200002e5 	.word	0x200002e5
 
-08001c14 <move_particle_state2below>:
+08001b34 <move_particle_state2below>:
 void move_particle_state2below(int x, int y) //=state2 upper
 {
- 8001c14:	b580      	push	{r7, lr}
- 8001c16:	b08a      	sub	sp, #40	@ 0x28
- 8001c18:	af00      	add	r7, sp, #0
- 8001c1a:	6078      	str	r0, [r7, #4]
- 8001c1c:	6039      	str	r1, [r7, #0]
+ 8001b34:	b580      	push	{r7, lr}
+ 8001b36:	b08a      	sub	sp, #40	@ 0x28
+ 8001b38:	af00      	add	r7, sp, #0
+ 8001b3a:	6078      	str	r0, [r7, #4]
+ 8001b3c:	6039      	str	r1, [r7, #0]
 	if (world[x][y] == 0) return;
- 8001c1e:	4a5a      	ldr	r2, [pc, #360]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001c20:	687b      	ldr	r3, [r7, #4]
- 8001c22:	011b      	lsls	r3, r3, #4
- 8001c24:	441a      	add	r2, r3
- 8001c26:	683b      	ldr	r3, [r7, #0]
- 8001c28:	4413      	add	r3, r2
- 8001c2a:	781b      	ldrb	r3, [r3, #0]
- 8001c2c:	2b00      	cmp	r3, #0
- 8001c2e:	f000 80a5 	beq.w	8001d7c <move_particle_state2below+0x168>
+ 8001b3e:	4a5a      	ldr	r2, [pc, #360]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001b40:	687b      	ldr	r3, [r7, #4]
+ 8001b42:	011b      	lsls	r3, r3, #4
+ 8001b44:	441a      	add	r2, r3
+ 8001b46:	683b      	ldr	r3, [r7, #0]
+ 8001b48:	4413      	add	r3, r2
+ 8001b4a:	781b      	ldrb	r3, [r3, #0]
+ 8001b4c:	2b00      	cmp	r3, #0
+ 8001b4e:	f000 80a5 	beq.w	8001c9c <move_particle_state2below+0x168>
 
 	int next_x = x + fwdX;
- 8001c32:	4b56      	ldr	r3, [pc, #344]	@ (8001d8c <move_particle_state2below+0x178>)
- 8001c34:	f993 3000 	ldrsb.w	r3, [r3]
- 8001c38:	461a      	mov	r2, r3
- 8001c3a:	687b      	ldr	r3, [r7, #4]
- 8001c3c:	4413      	add	r3, r2
- 8001c3e:	627b      	str	r3, [r7, #36]	@ 0x24
+ 8001b52:	4b56      	ldr	r3, [pc, #344]	@ (8001cac <move_particle_state2below+0x178>)
+ 8001b54:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001b58:	461a      	mov	r2, r3
+ 8001b5a:	687b      	ldr	r3, [r7, #4]
+ 8001b5c:	4413      	add	r3, r2
+ 8001b5e:	627b      	str	r3, [r7, #36]	@ 0x24
 	int next_y = y + fwdY;
- 8001c40:	4b53      	ldr	r3, [pc, #332]	@ (8001d90 <move_particle_state2below+0x17c>)
- 8001c42:	f993 3000 	ldrsb.w	r3, [r3]
- 8001c46:	461a      	mov	r2, r3
- 8001c48:	683b      	ldr	r3, [r7, #0]
- 8001c4a:	4413      	add	r3, r2
- 8001c4c:	623b      	str	r3, [r7, #32]
+ 8001b60:	4b53      	ldr	r3, [pc, #332]	@ (8001cb0 <move_particle_state2below+0x17c>)
+ 8001b62:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001b66:	461a      	mov	r2, r3
+ 8001b68:	683b      	ldr	r3, [r7, #0]
+ 8001b6a:	4413      	add	r3, r2
+ 8001b6c:	623b      	str	r3, [r7, #32]
 
 	int lX= x+leftX;
- 8001c4e:	4b51      	ldr	r3, [pc, #324]	@ (8001d94 <move_particle_state2below+0x180>)
- 8001c50:	f993 3000 	ldrsb.w	r3, [r3]
- 8001c54:	461a      	mov	r2, r3
- 8001c56:	687b      	ldr	r3, [r7, #4]
- 8001c58:	4413      	add	r3, r2
- 8001c5a:	61fb      	str	r3, [r7, #28]
+ 8001b6e:	4b51      	ldr	r3, [pc, #324]	@ (8001cb4 <move_particle_state2below+0x180>)
+ 8001b70:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001b74:	461a      	mov	r2, r3
+ 8001b76:	687b      	ldr	r3, [r7, #4]
+ 8001b78:	4413      	add	r3, r2
+ 8001b7a:	61fb      	str	r3, [r7, #28]
 	int lY= y+leftY;
- 8001c5c:	4b4e      	ldr	r3, [pc, #312]	@ (8001d98 <move_particle_state2below+0x184>)
- 8001c5e:	f993 3000 	ldrsb.w	r3, [r3]
- 8001c62:	461a      	mov	r2, r3
- 8001c64:	683b      	ldr	r3, [r7, #0]
- 8001c66:	4413      	add	r3, r2
- 8001c68:	61bb      	str	r3, [r7, #24]
+ 8001b7c:	4b4e      	ldr	r3, [pc, #312]	@ (8001cb8 <move_particle_state2below+0x184>)
+ 8001b7e:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001b82:	461a      	mov	r2, r3
+ 8001b84:	683b      	ldr	r3, [r7, #0]
+ 8001b86:	4413      	add	r3, r2
+ 8001b88:	61bb      	str	r3, [r7, #24]
 
 	int rX= x+rightX;
- 8001c6a:	4b4c      	ldr	r3, [pc, #304]	@ (8001d9c <move_particle_state2below+0x188>)
- 8001c6c:	f993 3000 	ldrsb.w	r3, [r3]
- 8001c70:	461a      	mov	r2, r3
- 8001c72:	687b      	ldr	r3, [r7, #4]
- 8001c74:	4413      	add	r3, r2
- 8001c76:	617b      	str	r3, [r7, #20]
+ 8001b8a:	4b4c      	ldr	r3, [pc, #304]	@ (8001cbc <move_particle_state2below+0x188>)
+ 8001b8c:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001b90:	461a      	mov	r2, r3
+ 8001b92:	687b      	ldr	r3, [r7, #4]
+ 8001b94:	4413      	add	r3, r2
+ 8001b96:	617b      	str	r3, [r7, #20]
 	int rY= y+rightY;
- 8001c78:	4b49      	ldr	r3, [pc, #292]	@ (8001da0 <move_particle_state2below+0x18c>)
- 8001c7a:	f993 3000 	ldrsb.w	r3, [r3]
- 8001c7e:	461a      	mov	r2, r3
- 8001c80:	683b      	ldr	r3, [r7, #0]
- 8001c82:	4413      	add	r3, r2
- 8001c84:	613b      	str	r3, [r7, #16]
+ 8001b98:	4b49      	ldr	r3, [pc, #292]	@ (8001cc0 <move_particle_state2below+0x18c>)
+ 8001b9a:	f993 3000 	ldrsb.w	r3, [r3]
+ 8001b9e:	461a      	mov	r2, r3
+ 8001ba0:	683b      	ldr	r3, [r7, #0]
+ 8001ba2:	4413      	add	r3, r2
+ 8001ba4:	613b      	str	r3, [r7, #16]
 	if(can_move_to(next_x,next_y))
- 8001c86:	6a39      	ldr	r1, [r7, #32]
- 8001c88:	6a78      	ldr	r0, [r7, #36]	@ 0x24
- 8001c8a:	f7ff fc1b 	bl	80014c4 <can_move_to>
- 8001c8e:	4603      	mov	r3, r0
- 8001c90:	2b00      	cmp	r3, #0
- 8001c92:	d010      	beq.n	8001cb6 <move_particle_state2below+0xa2>
+ 8001ba6:	6a39      	ldr	r1, [r7, #32]
+ 8001ba8:	6a78      	ldr	r0, [r7, #36]	@ 0x24
+ 8001baa:	f7ff fc1b 	bl	80013e4 <can_move_to>
+ 8001bae:	4603      	mov	r3, r0
+ 8001bb0:	2b00      	cmp	r3, #0
+ 8001bb2:	d010      	beq.n	8001bd6 <move_particle_state2below+0xa2>
 
 	{
 		world[x][y] = 0;
- 8001c94:	4a3c      	ldr	r2, [pc, #240]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001c96:	687b      	ldr	r3, [r7, #4]
- 8001c98:	011b      	lsls	r3, r3, #4
- 8001c9a:	441a      	add	r2, r3
- 8001c9c:	683b      	ldr	r3, [r7, #0]
- 8001c9e:	4413      	add	r3, r2
- 8001ca0:	2200      	movs	r2, #0
- 8001ca2:	701a      	strb	r2, [r3, #0]
+ 8001bb4:	4a3c      	ldr	r2, [pc, #240]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001bb6:	687b      	ldr	r3, [r7, #4]
+ 8001bb8:	011b      	lsls	r3, r3, #4
+ 8001bba:	441a      	add	r2, r3
+ 8001bbc:	683b      	ldr	r3, [r7, #0]
+ 8001bbe:	4413      	add	r3, r2
+ 8001bc0:	2200      	movs	r2, #0
+ 8001bc2:	701a      	strb	r2, [r3, #0]
 		world[next_x][next_y] = 1;
- 8001ca4:	4a38      	ldr	r2, [pc, #224]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001ca6:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
- 8001ca8:	011b      	lsls	r3, r3, #4
- 8001caa:	441a      	add	r2, r3
- 8001cac:	6a3b      	ldr	r3, [r7, #32]
- 8001cae:	4413      	add	r3, r2
- 8001cb0:	2201      	movs	r2, #1
- 8001cb2:	701a      	strb	r2, [r3, #0]
+ 8001bc4:	4a38      	ldr	r2, [pc, #224]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001bc6:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 8001bc8:	011b      	lsls	r3, r3, #4
+ 8001bca:	441a      	add	r2, r3
+ 8001bcc:	6a3b      	ldr	r3, [r7, #32]
+ 8001bce:	4413      	add	r3, r2
+ 8001bd0:	2201      	movs	r2, #1
+ 8001bd2:	701a      	strb	r2, [r3, #0]
 		return;
- 8001cb4:	e065      	b.n	8001d82 <move_particle_state2below+0x16e>
+ 8001bd4:	e065      	b.n	8001ca2 <move_particle_state2below+0x16e>
 	}
 
 	bool can_left  = can_move_to_state0upper(lX, lY);
- 8001cb6:	69b9      	ldr	r1, [r7, #24]
- 8001cb8:	69f8      	ldr	r0, [r7, #28]
- 8001cba:	f7ff fc27 	bl	800150c <can_move_to_state0upper>
- 8001cbe:	4603      	mov	r3, r0
- 8001cc0:	73fb      	strb	r3, [r7, #15]
+ 8001bd6:	69b9      	ldr	r1, [r7, #24]
+ 8001bd8:	69f8      	ldr	r0, [r7, #28]
+ 8001bda:	f7ff fc27 	bl	800142c <can_move_to_state0upper>
+ 8001bde:	4603      	mov	r3, r0
+ 8001be0:	73fb      	strb	r3, [r7, #15]
 	bool can_right = can_move_to_state0upper(rX, rY);
- 8001cc2:	6939      	ldr	r1, [r7, #16]
- 8001cc4:	6978      	ldr	r0, [r7, #20]
- 8001cc6:	f7ff fc21 	bl	800150c <can_move_to_state0upper>
- 8001cca:	4603      	mov	r3, r0
- 8001ccc:	73bb      	strb	r3, [r7, #14]
+ 8001be2:	6939      	ldr	r1, [r7, #16]
+ 8001be4:	6978      	ldr	r0, [r7, #20]
+ 8001be6:	f7ff fc21 	bl	800142c <can_move_to_state0upper>
+ 8001bea:	4603      	mov	r3, r0
+ 8001bec:	73bb      	strb	r3, [r7, #14]
 
 	    if (can_left && can_right) {
- 8001cce:	7bfb      	ldrb	r3, [r7, #15]
- 8001cd0:	2b00      	cmp	r3, #0
- 8001cd2:	d02b      	beq.n	8001d2c <move_particle_state2below+0x118>
- 8001cd4:	7bbb      	ldrb	r3, [r7, #14]
- 8001cd6:	2b00      	cmp	r3, #0
- 8001cd8:	d028      	beq.n	8001d2c <move_particle_state2below+0x118>
+ 8001bee:	7bfb      	ldrb	r3, [r7, #15]
+ 8001bf0:	2b00      	cmp	r3, #0
+ 8001bf2:	d02b      	beq.n	8001c4c <move_particle_state2below+0x118>
+ 8001bf4:	7bbb      	ldrb	r3, [r7, #14]
+ 8001bf6:	2b00      	cmp	r3, #0
+ 8001bf8:	d028      	beq.n	8001c4c <move_particle_state2below+0x118>
 
 	        if (rand() % 2 == 0) {
- 8001cda:	f003 f933 	bl	8004f44 <rand>
- 8001cde:	4603      	mov	r3, r0
- 8001ce0:	f003 0301 	and.w	r3, r3, #1
- 8001ce4:	2b00      	cmp	r3, #0
- 8001ce6:	d110      	bne.n	8001d0a <move_particle_state2below+0xf6>
+ 8001bfa:	f003 f9a3 	bl	8004f44 <rand>
+ 8001bfe:	4603      	mov	r3, r0
+ 8001c00:	f003 0301 	and.w	r3, r3, #1
+ 8001c04:	2b00      	cmp	r3, #0
+ 8001c06:	d110      	bne.n	8001c2a <move_particle_state2below+0xf6>
 	            world[x][y] = 0; world[lX][lY] = 1;
- 8001ce8:	4a27      	ldr	r2, [pc, #156]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001cea:	687b      	ldr	r3, [r7, #4]
- 8001cec:	011b      	lsls	r3, r3, #4
- 8001cee:	441a      	add	r2, r3
- 8001cf0:	683b      	ldr	r3, [r7, #0]
- 8001cf2:	4413      	add	r3, r2
- 8001cf4:	2200      	movs	r2, #0
- 8001cf6:	701a      	strb	r2, [r3, #0]
- 8001cf8:	4a23      	ldr	r2, [pc, #140]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001cfa:	69fb      	ldr	r3, [r7, #28]
- 8001cfc:	011b      	lsls	r3, r3, #4
- 8001cfe:	441a      	add	r2, r3
- 8001d00:	69bb      	ldr	r3, [r7, #24]
- 8001d02:	4413      	add	r3, r2
- 8001d04:	2201      	movs	r2, #1
- 8001d06:	701a      	strb	r2, [r3, #0]
+ 8001c08:	4a27      	ldr	r2, [pc, #156]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001c0a:	687b      	ldr	r3, [r7, #4]
+ 8001c0c:	011b      	lsls	r3, r3, #4
+ 8001c0e:	441a      	add	r2, r3
+ 8001c10:	683b      	ldr	r3, [r7, #0]
+ 8001c12:	4413      	add	r3, r2
+ 8001c14:	2200      	movs	r2, #0
+ 8001c16:	701a      	strb	r2, [r3, #0]
+ 8001c18:	4a23      	ldr	r2, [pc, #140]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001c1a:	69fb      	ldr	r3, [r7, #28]
+ 8001c1c:	011b      	lsls	r3, r3, #4
+ 8001c1e:	441a      	add	r2, r3
+ 8001c20:	69bb      	ldr	r3, [r7, #24]
+ 8001c22:	4413      	add	r3, r2
+ 8001c24:	2201      	movs	r2, #1
+ 8001c26:	701a      	strb	r2, [r3, #0]
 	        if (rand() % 2 == 0) {
- 8001d08:	e03b      	b.n	8001d82 <move_particle_state2below+0x16e>
+ 8001c28:	e03b      	b.n	8001ca2 <move_particle_state2below+0x16e>
 	        } else {
 	            world[x][y] = 0; world[rX][rY] = 1;
- 8001d0a:	4a1f      	ldr	r2, [pc, #124]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001d0c:	687b      	ldr	r3, [r7, #4]
- 8001d0e:	011b      	lsls	r3, r3, #4
- 8001d10:	441a      	add	r2, r3
- 8001d12:	683b      	ldr	r3, [r7, #0]
- 8001d14:	4413      	add	r3, r2
- 8001d16:	2200      	movs	r2, #0
- 8001d18:	701a      	strb	r2, [r3, #0]
- 8001d1a:	4a1b      	ldr	r2, [pc, #108]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001d1c:	697b      	ldr	r3, [r7, #20]
- 8001d1e:	011b      	lsls	r3, r3, #4
- 8001d20:	441a      	add	r2, r3
- 8001d22:	693b      	ldr	r3, [r7, #16]
- 8001d24:	4413      	add	r3, r2
- 8001d26:	2201      	movs	r2, #1
- 8001d28:	701a      	strb	r2, [r3, #0]
+ 8001c2a:	4a1f      	ldr	r2, [pc, #124]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001c2c:	687b      	ldr	r3, [r7, #4]
+ 8001c2e:	011b      	lsls	r3, r3, #4
+ 8001c30:	441a      	add	r2, r3
+ 8001c32:	683b      	ldr	r3, [r7, #0]
+ 8001c34:	4413      	add	r3, r2
+ 8001c36:	2200      	movs	r2, #0
+ 8001c38:	701a      	strb	r2, [r3, #0]
+ 8001c3a:	4a1b      	ldr	r2, [pc, #108]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001c3c:	697b      	ldr	r3, [r7, #20]
+ 8001c3e:	011b      	lsls	r3, r3, #4
+ 8001c40:	441a      	add	r2, r3
+ 8001c42:	693b      	ldr	r3, [r7, #16]
+ 8001c44:	4413      	add	r3, r2
+ 8001c46:	2201      	movs	r2, #1
+ 8001c48:	701a      	strb	r2, [r3, #0]
 	        if (rand() % 2 == 0) {
- 8001d2a:	e02a      	b.n	8001d82 <move_particle_state2below+0x16e>
+ 8001c4a:	e02a      	b.n	8001ca2 <move_particle_state2below+0x16e>
 	        }
 	    }
 	    else if (can_left) {
- 8001d2c:	7bfb      	ldrb	r3, [r7, #15]
- 8001d2e:	2b00      	cmp	r3, #0
- 8001d30:	d010      	beq.n	8001d54 <move_particle_state2below+0x140>
+ 8001c4c:	7bfb      	ldrb	r3, [r7, #15]
+ 8001c4e:	2b00      	cmp	r3, #0
+ 8001c50:	d010      	beq.n	8001c74 <move_particle_state2below+0x140>
 
 	        world[x][y] = 0; world[lX][lY] = 1;
- 8001d32:	4a15      	ldr	r2, [pc, #84]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001d34:	687b      	ldr	r3, [r7, #4]
- 8001d36:	011b      	lsls	r3, r3, #4
- 8001d38:	441a      	add	r2, r3
- 8001d3a:	683b      	ldr	r3, [r7, #0]
- 8001d3c:	4413      	add	r3, r2
- 8001d3e:	2200      	movs	r2, #0
- 8001d40:	701a      	strb	r2, [r3, #0]
- 8001d42:	4a11      	ldr	r2, [pc, #68]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001d44:	69fb      	ldr	r3, [r7, #28]
- 8001d46:	011b      	lsls	r3, r3, #4
- 8001d48:	441a      	add	r2, r3
- 8001d4a:	69bb      	ldr	r3, [r7, #24]
- 8001d4c:	4413      	add	r3, r2
- 8001d4e:	2201      	movs	r2, #1
- 8001d50:	701a      	strb	r2, [r3, #0]
- 8001d52:	e016      	b.n	8001d82 <move_particle_state2below+0x16e>
+ 8001c52:	4a15      	ldr	r2, [pc, #84]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001c54:	687b      	ldr	r3, [r7, #4]
+ 8001c56:	011b      	lsls	r3, r3, #4
+ 8001c58:	441a      	add	r2, r3
+ 8001c5a:	683b      	ldr	r3, [r7, #0]
+ 8001c5c:	4413      	add	r3, r2
+ 8001c5e:	2200      	movs	r2, #0
+ 8001c60:	701a      	strb	r2, [r3, #0]
+ 8001c62:	4a11      	ldr	r2, [pc, #68]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001c64:	69fb      	ldr	r3, [r7, #28]
+ 8001c66:	011b      	lsls	r3, r3, #4
+ 8001c68:	441a      	add	r2, r3
+ 8001c6a:	69bb      	ldr	r3, [r7, #24]
+ 8001c6c:	4413      	add	r3, r2
+ 8001c6e:	2201      	movs	r2, #1
+ 8001c70:	701a      	strb	r2, [r3, #0]
+ 8001c72:	e016      	b.n	8001ca2 <move_particle_state2below+0x16e>
 	    }
 	    else if (can_right) {
- 8001d54:	7bbb      	ldrb	r3, [r7, #14]
- 8001d56:	2b00      	cmp	r3, #0
- 8001d58:	d012      	beq.n	8001d80 <move_particle_state2below+0x16c>
+ 8001c74:	7bbb      	ldrb	r3, [r7, #14]
+ 8001c76:	2b00      	cmp	r3, #0
+ 8001c78:	d012      	beq.n	8001ca0 <move_particle_state2below+0x16c>
 
 	        world[x][y] = 0; world[rX][rY] = 1;
- 8001d5a:	4a0b      	ldr	r2, [pc, #44]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001d5c:	687b      	ldr	r3, [r7, #4]
- 8001d5e:	011b      	lsls	r3, r3, #4
- 8001d60:	441a      	add	r2, r3
- 8001d62:	683b      	ldr	r3, [r7, #0]
- 8001d64:	4413      	add	r3, r2
- 8001d66:	2200      	movs	r2, #0
- 8001d68:	701a      	strb	r2, [r3, #0]
- 8001d6a:	4a07      	ldr	r2, [pc, #28]	@ (8001d88 <move_particle_state2below+0x174>)
- 8001d6c:	697b      	ldr	r3, [r7, #20]
- 8001d6e:	011b      	lsls	r3, r3, #4
- 8001d70:	441a      	add	r2, r3
- 8001d72:	693b      	ldr	r3, [r7, #16]
- 8001d74:	4413      	add	r3, r2
- 8001d76:	2201      	movs	r2, #1
- 8001d78:	701a      	strb	r2, [r3, #0]
- 8001d7a:	e002      	b.n	8001d82 <move_particle_state2below+0x16e>
+ 8001c7a:	4a0b      	ldr	r2, [pc, #44]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001c7c:	687b      	ldr	r3, [r7, #4]
+ 8001c7e:	011b      	lsls	r3, r3, #4
+ 8001c80:	441a      	add	r2, r3
+ 8001c82:	683b      	ldr	r3, [r7, #0]
+ 8001c84:	4413      	add	r3, r2
+ 8001c86:	2200      	movs	r2, #0
+ 8001c88:	701a      	strb	r2, [r3, #0]
+ 8001c8a:	4a07      	ldr	r2, [pc, #28]	@ (8001ca8 <move_particle_state2below+0x174>)
+ 8001c8c:	697b      	ldr	r3, [r7, #20]
+ 8001c8e:	011b      	lsls	r3, r3, #4
+ 8001c90:	441a      	add	r2, r3
+ 8001c92:	693b      	ldr	r3, [r7, #16]
+ 8001c94:	4413      	add	r3, r2
+ 8001c96:	2201      	movs	r2, #1
+ 8001c98:	701a      	strb	r2, [r3, #0]
+ 8001c9a:	e002      	b.n	8001ca2 <move_particle_state2below+0x16e>
 	if (world[x][y] == 0) return;
- 8001d7c:	bf00      	nop
- 8001d7e:	e000      	b.n	8001d82 <move_particle_state2below+0x16e>
+ 8001c9c:	bf00      	nop
+ 8001c9e:	e000      	b.n	8001ca2 <move_particle_state2below+0x16e>
 	    }
 	    else{return;}
- 8001d80:	bf00      	nop
+ 8001ca0:	bf00      	nop
 	//Đứng yên
 }
- 8001d82:	3728      	adds	r7, #40	@ 0x28
- 8001d84:	46bd      	mov	sp, r7
- 8001d86:	bd80      	pop	{r7, pc}
- 8001d88:	20000178 	.word	0x20000178
- 8001d8c:	200002e0 	.word	0x200002e0
- 8001d90:	200002e1 	.word	0x200002e1
- 8001d94:	200002e2 	.word	0x200002e2
- 8001d98:	200002e3 	.word	0x200002e3
- 8001d9c:	200002e4 	.word	0x200002e4
- 8001da0:	200002e5 	.word	0x200002e5
+ 8001ca2:	3728      	adds	r7, #40	@ 0x28
+ 8001ca4:	46bd      	mov	sp, r7
+ 8001ca6:	bd80      	pop	{r7, pc}
+ 8001ca8:	20000178 	.word	0x20000178
+ 8001cac:	200002e0 	.word	0x200002e0
+ 8001cb0:	200002e1 	.word	0x200002e1
+ 8001cb4:	200002e2 	.word	0x200002e2
+ 8001cb8:	200002e3 	.word	0x200002e3
+ 8001cbc:	200002e4 	.word	0x200002e4
+ 8001cc0:	200002e5 	.word	0x200002e5
 
-08001da4 <Update_State_0_Down>:
+08001cc4 <Update_State_0_Down>:
 
 //We have the difference with the state 0 and state 2 because i already explain the reason in the boundary func
 
 //state0: scan the area that dont have led to the area that have led
 //every state has the same logic to prevent the line effect when update
 void Update_State_0_Down(void) {
- 8001da4:	b580      	push	{r7, lr}
- 8001da6:	b084      	sub	sp, #16
- 8001da8:	af00      	add	r7, sp, #0
+ 8001cc4:	b580      	push	{r7, lr}
+ 8001cc6:	b084      	sub	sp, #16
+ 8001cc8:	af00      	add	r7, sp, #0
 
 
     for (int y = 0; y <= 7; y++) {
- 8001daa:	2300      	movs	r3, #0
- 8001dac:	60fb      	str	r3, [r7, #12]
- 8001dae:	e00f      	b.n	8001dd0 <Update_State_0_Down+0x2c>
+ 8001cca:	2300      	movs	r3, #0
+ 8001ccc:	60fb      	str	r3, [r7, #12]
+ 8001cce:	e00f      	b.n	8001cf0 <Update_State_0_Down+0x2c>
         for (int x = 15; x >= 8; x--) {
- 8001db0:	230f      	movs	r3, #15
- 8001db2:	60bb      	str	r3, [r7, #8]
- 8001db4:	e006      	b.n	8001dc4 <Update_State_0_Down+0x20>
+ 8001cd0:	230f      	movs	r3, #15
+ 8001cd2:	60bb      	str	r3, [r7, #8]
+ 8001cd4:	e006      	b.n	8001ce4 <Update_State_0_Down+0x20>
             move_particle_state0below(x, y);
- 8001db6:	68f9      	ldr	r1, [r7, #12]
- 8001db8:	68b8      	ldr	r0, [r7, #8]
- 8001dba:	f7ff fe63 	bl	8001a84 <move_particle_state0below>
+ 8001cd6:	68f9      	ldr	r1, [r7, #12]
+ 8001cd8:	68b8      	ldr	r0, [r7, #8]
+ 8001cda:	f7ff fe63 	bl	80019a4 <move_particle_state0below>
         for (int x = 15; x >= 8; x--) {
- 8001dbe:	68bb      	ldr	r3, [r7, #8]
- 8001dc0:	3b01      	subs	r3, #1
- 8001dc2:	60bb      	str	r3, [r7, #8]
- 8001dc4:	68bb      	ldr	r3, [r7, #8]
- 8001dc6:	2b07      	cmp	r3, #7
- 8001dc8:	dcf5      	bgt.n	8001db6 <Update_State_0_Down+0x12>
+ 8001cde:	68bb      	ldr	r3, [r7, #8]
+ 8001ce0:	3b01      	subs	r3, #1
+ 8001ce2:	60bb      	str	r3, [r7, #8]
+ 8001ce4:	68bb      	ldr	r3, [r7, #8]
+ 8001ce6:	2b07      	cmp	r3, #7
+ 8001ce8:	dcf5      	bgt.n	8001cd6 <Update_State_0_Down+0x12>
     for (int y = 0; y <= 7; y++) {
- 8001dca:	68fb      	ldr	r3, [r7, #12]
- 8001dcc:	3301      	adds	r3, #1
- 8001dce:	60fb      	str	r3, [r7, #12]
- 8001dd0:	68fb      	ldr	r3, [r7, #12]
- 8001dd2:	2b07      	cmp	r3, #7
- 8001dd4:	ddec      	ble.n	8001db0 <Update_State_0_Down+0xc>
+ 8001cea:	68fb      	ldr	r3, [r7, #12]
+ 8001cec:	3301      	adds	r3, #1
+ 8001cee:	60fb      	str	r3, [r7, #12]
+ 8001cf0:	68fb      	ldr	r3, [r7, #12]
+ 8001cf2:	2b07      	cmp	r3, #7
+ 8001cf4:	ddec      	ble.n	8001cd0 <Update_State_0_Down+0xc>
         }
     }
     for (int y = 8; y <= 15; y++) {
- 8001dd6:	2308      	movs	r3, #8
- 8001dd8:	607b      	str	r3, [r7, #4]
- 8001dda:	e00f      	b.n	8001dfc <Update_State_0_Down+0x58>
+ 8001cf6:	2308      	movs	r3, #8
+ 8001cf8:	607b      	str	r3, [r7, #4]
+ 8001cfa:	e00f      	b.n	8001d1c <Update_State_0_Down+0x58>
         for (int x = 7; x >= 0; x--) {
- 8001ddc:	2307      	movs	r3, #7
- 8001dde:	603b      	str	r3, [r7, #0]
- 8001de0:	e006      	b.n	8001df0 <Update_State_0_Down+0x4c>
+ 8001cfc:	2307      	movs	r3, #7
+ 8001cfe:	603b      	str	r3, [r7, #0]
+ 8001d00:	e006      	b.n	8001d10 <Update_State_0_Down+0x4c>
            move_particle_state0upper(x, y);
- 8001de2:	6879      	ldr	r1, [r7, #4]
- 8001de4:	6838      	ldr	r0, [r7, #0]
- 8001de6:	f7ff fd11 	bl	800180c <move_particle_state0upper>
+ 8001d02:	6879      	ldr	r1, [r7, #4]
+ 8001d04:	6838      	ldr	r0, [r7, #0]
+ 8001d06:	f7ff fd11 	bl	800172c <move_particle_state0upper>
         for (int x = 7; x >= 0; x--) {
+ 8001d0a:	683b      	ldr	r3, [r7, #0]
+ 8001d0c:	3b01      	subs	r3, #1
+ 8001d0e:	603b      	str	r3, [r7, #0]
+ 8001d10:	683b      	ldr	r3, [r7, #0]
+ 8001d12:	2b00      	cmp	r3, #0
+ 8001d14:	daf5      	bge.n	8001d02 <Update_State_0_Down+0x3e>
+    for (int y = 8; y <= 15; y++) {
+ 8001d16:	687b      	ldr	r3, [r7, #4]
+ 8001d18:	3301      	adds	r3, #1
+ 8001d1a:	607b      	str	r3, [r7, #4]
+ 8001d1c:	687b      	ldr	r3, [r7, #4]
+ 8001d1e:	2b0f      	cmp	r3, #15
+ 8001d20:	ddec      	ble.n	8001cfc <Update_State_0_Down+0x38>
+         }
+     }
+}
+ 8001d22:	bf00      	nop
+ 8001d24:	bf00      	nop
+ 8001d26:	3710      	adds	r7, #16
+ 8001d28:	46bd      	mov	sp, r7
+ 8001d2a:	bd80      	pop	{r7, pc}
+
+08001d2c <Update_State_2_Up>:
+
+void Update_State_2_Up(void) {
+ 8001d2c:	b580      	push	{r7, lr}
+ 8001d2e:	b084      	sub	sp, #16
+ 8001d30:	af00      	add	r7, sp, #0
+
+
+    for (int y = 0; y <= 7; y++) {
+ 8001d32:	2300      	movs	r3, #0
+ 8001d34:	60fb      	str	r3, [r7, #12]
+ 8001d36:	e00f      	b.n	8001d58 <Update_State_2_Up+0x2c>
+        for (int x = 8; x <=15; x++) {
+ 8001d38:	2308      	movs	r3, #8
+ 8001d3a:	60bb      	str	r3, [r7, #8]
+ 8001d3c:	e006      	b.n	8001d4c <Update_State_2_Up+0x20>
+            move_particle_state2upper(x, y);
+ 8001d3e:	68f9      	ldr	r1, [r7, #12]
+ 8001d40:	68b8      	ldr	r0, [r7, #8]
+ 8001d42:	f7ff fd91 	bl	8001868 <move_particle_state2upper>
+        for (int x = 8; x <=15; x++) {
+ 8001d46:	68bb      	ldr	r3, [r7, #8]
+ 8001d48:	3301      	adds	r3, #1
+ 8001d4a:	60bb      	str	r3, [r7, #8]
+ 8001d4c:	68bb      	ldr	r3, [r7, #8]
+ 8001d4e:	2b0f      	cmp	r3, #15
+ 8001d50:	ddf5      	ble.n	8001d3e <Update_State_2_Up+0x12>
+    for (int y = 0; y <= 7; y++) {
+ 8001d52:	68fb      	ldr	r3, [r7, #12]
+ 8001d54:	3301      	adds	r3, #1
+ 8001d56:	60fb      	str	r3, [r7, #12]
+ 8001d58:	68fb      	ldr	r3, [r7, #12]
+ 8001d5a:	2b07      	cmp	r3, #7
+ 8001d5c:	ddec      	ble.n	8001d38 <Update_State_2_Up+0xc>
+        }
+    }
+    for (int y = 15; y >=8; y--	) {
+ 8001d5e:	230f      	movs	r3, #15
+ 8001d60:	607b      	str	r3, [r7, #4]
+ 8001d62:	e00f      	b.n	8001d84 <Update_State_2_Up+0x58>
+            for (int x = 7; x >= 0; x--) {
+ 8001d64:	2307      	movs	r3, #7
+ 8001d66:	603b      	str	r3, [r7, #0]
+ 8001d68:	e006      	b.n	8001d78 <Update_State_2_Up+0x4c>
+            move_particle_state2below(x, y);
+ 8001d6a:	6879      	ldr	r1, [r7, #4]
+ 8001d6c:	6838      	ldr	r0, [r7, #0]
+ 8001d6e:	f7ff fee1 	bl	8001b34 <move_particle_state2below>
+            for (int x = 7; x >= 0; x--) {
+ 8001d72:	683b      	ldr	r3, [r7, #0]
+ 8001d74:	3b01      	subs	r3, #1
+ 8001d76:	603b      	str	r3, [r7, #0]
+ 8001d78:	683b      	ldr	r3, [r7, #0]
+ 8001d7a:	2b00      	cmp	r3, #0
+ 8001d7c:	daf5      	bge.n	8001d6a <Update_State_2_Up+0x3e>
+    for (int y = 15; y >=8; y--	) {
+ 8001d7e:	687b      	ldr	r3, [r7, #4]
+ 8001d80:	3b01      	subs	r3, #1
+ 8001d82:	607b      	str	r3, [r7, #4]
+ 8001d84:	687b      	ldr	r3, [r7, #4]
+ 8001d86:	2b07      	cmp	r3, #7
+ 8001d88:	dcec      	bgt.n	8001d64 <Update_State_2_Up+0x38>
+         }
+     }
+}
+ 8001d8a:	bf00      	nop
+ 8001d8c:	bf00      	nop
+ 8001d8e:	3710      	adds	r7, #16
+ 8001d90:	46bd      	mov	sp, r7
+ 8001d92:	bd80      	pop	{r7, pc}
+
+08001d94 <Update_State_1_Right>:
+void Update_State_1_Right(void) {
+ 8001d94:	b580      	push	{r7, lr}
+ 8001d96:	b082      	sub	sp, #8
+ 8001d98:	af00      	add	r7, sp, #0
+    for (int x = 0; x <=15; x++) {
+ 8001d9a:	2300      	movs	r3, #0
+ 8001d9c:	607b      	str	r3, [r7, #4]
+ 8001d9e:	e00f      	b.n	8001dc0 <Update_State_1_Right+0x2c>
+        for (int y = 0; y <= 15; y++) {
+ 8001da0:	2300      	movs	r3, #0
+ 8001da2:	603b      	str	r3, [r7, #0]
+ 8001da4:	e006      	b.n	8001db4 <Update_State_1_Right+0x20>
+            move_particle(x, y);
+ 8001da6:	6839      	ldr	r1, [r7, #0]
+ 8001da8:	6878      	ldr	r0, [r7, #4]
+ 8001daa:	f7ff fbf7 	bl	800159c <move_particle>
+        for (int y = 0; y <= 15; y++) {
+ 8001dae:	683b      	ldr	r3, [r7, #0]
+ 8001db0:	3301      	adds	r3, #1
+ 8001db2:	603b      	str	r3, [r7, #0]
+ 8001db4:	683b      	ldr	r3, [r7, #0]
+ 8001db6:	2b0f      	cmp	r3, #15
+ 8001db8:	ddf5      	ble.n	8001da6 <Update_State_1_Right+0x12>
+    for (int x = 0; x <=15; x++) {
+ 8001dba:	687b      	ldr	r3, [r7, #4]
+ 8001dbc:	3301      	adds	r3, #1
+ 8001dbe:	607b      	str	r3, [r7, #4]
+ 8001dc0:	687b      	ldr	r3, [r7, #4]
+ 8001dc2:	2b0f      	cmp	r3, #15
+ 8001dc4:	ddec      	ble.n	8001da0 <Update_State_1_Right+0xc>
+        }
+    }
+}
+ 8001dc6:	bf00      	nop
+ 8001dc8:	bf00      	nop
+ 8001dca:	3708      	adds	r7, #8
+ 8001dcc:	46bd      	mov	sp, r7
+ 8001dce:	bd80      	pop	{r7, pc}
+
+08001dd0 <Update_State_3_Left>:
+
+void Update_State_3_Left(void) {
+ 8001dd0:	b580      	push	{r7, lr}
+ 8001dd2:	b082      	sub	sp, #8
+ 8001dd4:	af00      	add	r7, sp, #0
+    for (int x = 15; x >=0; x--) {
+ 8001dd6:	230f      	movs	r3, #15
+ 8001dd8:	607b      	str	r3, [r7, #4]
+ 8001dda:	e00f      	b.n	8001dfc <Update_State_3_Left+0x2c>
+        for (int y = 15; y >=0; y--) {
+ 8001ddc:	230f      	movs	r3, #15
+ 8001dde:	603b      	str	r3, [r7, #0]
+ 8001de0:	e006      	b.n	8001df0 <Update_State_3_Left+0x20>
+            move_particle(x, y);
+ 8001de2:	6839      	ldr	r1, [r7, #0]
+ 8001de4:	6878      	ldr	r0, [r7, #4]
+ 8001de6:	f7ff fbd9 	bl	800159c <move_particle>
+        for (int y = 15; y >=0; y--) {
  8001dea:	683b      	ldr	r3, [r7, #0]
  8001dec:	3b01      	subs	r3, #1
  8001dee:	603b      	str	r3, [r7, #0]
  8001df0:	683b      	ldr	r3, [r7, #0]
  8001df2:	2b00      	cmp	r3, #0
- 8001df4:	daf5      	bge.n	8001de2 <Update_State_0_Down+0x3e>
-    for (int y = 8; y <= 15; y++) {
+ 8001df4:	daf5      	bge.n	8001de2 <Update_State_3_Left+0x12>
+    for (int x = 15; x >=0; x--) {
  8001df6:	687b      	ldr	r3, [r7, #4]
- 8001df8:	3301      	adds	r3, #1
+ 8001df8:	3b01      	subs	r3, #1
  8001dfa:	607b      	str	r3, [r7, #4]
  8001dfc:	687b      	ldr	r3, [r7, #4]
- 8001dfe:	2b0f      	cmp	r3, #15
- 8001e00:	ddec      	ble.n	8001ddc <Update_State_0_Down+0x38>
-         }
-     }
+ 8001dfe:	2b00      	cmp	r3, #0
+ 8001e00:	daec      	bge.n	8001ddc <Update_State_3_Left+0xc>
+        }
+    }
 }
  8001e02:	bf00      	nop
  8001e04:	bf00      	nop
- 8001e06:	3710      	adds	r7, #16
+ 8001e06:	3708      	adds	r7, #8
  8001e08:	46bd      	mov	sp, r7
  8001e0a:	bd80      	pop	{r7, pc}
 
-08001e0c <Update_State_2_Up>:
-
-void Update_State_2_Up(void) {
- 8001e0c:	b580      	push	{r7, lr}
- 8001e0e:	b084      	sub	sp, #16
- 8001e10:	af00      	add	r7, sp, #0
-
-
-    for (int y = 0; y <= 7; y++) {
- 8001e12:	2300      	movs	r3, #0
- 8001e14:	60fb      	str	r3, [r7, #12]
- 8001e16:	e00f      	b.n	8001e38 <Update_State_2_Up+0x2c>
-        for (int x = 8; x <=15; x++) {
- 8001e18:	2308      	movs	r3, #8
- 8001e1a:	60bb      	str	r3, [r7, #8]
- 8001e1c:	e006      	b.n	8001e2c <Update_State_2_Up+0x20>
-            move_particle_state2upper(x, y);
- 8001e1e:	68f9      	ldr	r1, [r7, #12]
- 8001e20:	68b8      	ldr	r0, [r7, #8]
- 8001e22:	f7ff fd91 	bl	8001948 <move_particle_state2upper>
-        for (int x = 8; x <=15; x++) {
- 8001e26:	68bb      	ldr	r3, [r7, #8]
- 8001e28:	3301      	adds	r3, #1
- 8001e2a:	60bb      	str	r3, [r7, #8]
- 8001e2c:	68bb      	ldr	r3, [r7, #8]
- 8001e2e:	2b0f      	cmp	r3, #15
- 8001e30:	ddf5      	ble.n	8001e1e <Update_State_2_Up+0x12>
-    for (int y = 0; y <= 7; y++) {
- 8001e32:	68fb      	ldr	r3, [r7, #12]
- 8001e34:	3301      	adds	r3, #1
- 8001e36:	60fb      	str	r3, [r7, #12]
- 8001e38:	68fb      	ldr	r3, [r7, #12]
- 8001e3a:	2b07      	cmp	r3, #7
- 8001e3c:	ddec      	ble.n	8001e18 <Update_State_2_Up+0xc>
-        }
-    }
-    for (int y = 15; y >=8; y--	) {
- 8001e3e:	230f      	movs	r3, #15
- 8001e40:	607b      	str	r3, [r7, #4]
- 8001e42:	e00f      	b.n	8001e64 <Update_State_2_Up+0x58>
-            for (int x = 7; x >= 0; x--) {
- 8001e44:	2307      	movs	r3, #7
- 8001e46:	603b      	str	r3, [r7, #0]
- 8001e48:	e006      	b.n	8001e58 <Update_State_2_Up+0x4c>
-            move_particle_state2below(x, y);
- 8001e4a:	6879      	ldr	r1, [r7, #4]
- 8001e4c:	6838      	ldr	r0, [r7, #0]
- 8001e4e:	f7ff fee1 	bl	8001c14 <move_particle_state2below>
-            for (int x = 7; x >= 0; x--) {
- 8001e52:	683b      	ldr	r3, [r7, #0]
- 8001e54:	3b01      	subs	r3, #1
- 8001e56:	603b      	str	r3, [r7, #0]
- 8001e58:	683b      	ldr	r3, [r7, #0]
- 8001e5a:	2b00      	cmp	r3, #0
- 8001e5c:	daf5      	bge.n	8001e4a <Update_State_2_Up+0x3e>
-    for (int y = 15; y >=8; y--	) {
- 8001e5e:	687b      	ldr	r3, [r7, #4]
- 8001e60:	3b01      	subs	r3, #1
- 8001e62:	607b      	str	r3, [r7, #4]
- 8001e64:	687b      	ldr	r3, [r7, #4]
- 8001e66:	2b07      	cmp	r3, #7
- 8001e68:	dcec      	bgt.n	8001e44 <Update_State_2_Up+0x38>
-         }
-     }
-}
- 8001e6a:	bf00      	nop
- 8001e6c:	bf00      	nop
- 8001e6e:	3710      	adds	r7, #16
- 8001e70:	46bd      	mov	sp, r7
- 8001e72:	bd80      	pop	{r7, pc}
-
-08001e74 <Update_State_1_Right>:
-void Update_State_1_Right(void) {
- 8001e74:	b580      	push	{r7, lr}
- 8001e76:	b082      	sub	sp, #8
- 8001e78:	af00      	add	r7, sp, #0
-    for (int x = 0; x <=15; x++) {
- 8001e7a:	2300      	movs	r3, #0
- 8001e7c:	607b      	str	r3, [r7, #4]
- 8001e7e:	e00f      	b.n	8001ea0 <Update_State_1_Right+0x2c>
-        for (int y = 0; y <= 15; y++) {
- 8001e80:	2300      	movs	r3, #0
- 8001e82:	603b      	str	r3, [r7, #0]
- 8001e84:	e006      	b.n	8001e94 <Update_State_1_Right+0x20>
-            move_particle(x, y);
- 8001e86:	6839      	ldr	r1, [r7, #0]
- 8001e88:	6878      	ldr	r0, [r7, #4]
- 8001e8a:	f7ff fbf7 	bl	800167c <move_particle>
-        for (int y = 0; y <= 15; y++) {
- 8001e8e:	683b      	ldr	r3, [r7, #0]
- 8001e90:	3301      	adds	r3, #1
- 8001e92:	603b      	str	r3, [r7, #0]
- 8001e94:	683b      	ldr	r3, [r7, #0]
- 8001e96:	2b0f      	cmp	r3, #15
- 8001e98:	ddf5      	ble.n	8001e86 <Update_State_1_Right+0x12>
-    for (int x = 0; x <=15; x++) {
- 8001e9a:	687b      	ldr	r3, [r7, #4]
- 8001e9c:	3301      	adds	r3, #1
- 8001e9e:	607b      	str	r3, [r7, #4]
- 8001ea0:	687b      	ldr	r3, [r7, #4]
- 8001ea2:	2b0f      	cmp	r3, #15
- 8001ea4:	ddec      	ble.n	8001e80 <Update_State_1_Right+0xc>
-        }
-    }
-}
- 8001ea6:	bf00      	nop
- 8001ea8:	bf00      	nop
- 8001eaa:	3708      	adds	r7, #8
- 8001eac:	46bd      	mov	sp, r7
- 8001eae:	bd80      	pop	{r7, pc}
-
-08001eb0 <Update_State_3_Left>:
-
-void Update_State_3_Left(void) {
- 8001eb0:	b580      	push	{r7, lr}
- 8001eb2:	b082      	sub	sp, #8
- 8001eb4:	af00      	add	r7, sp, #0
-    for (int x = 15; x >=0; x--) {
- 8001eb6:	230f      	movs	r3, #15
- 8001eb8:	607b      	str	r3, [r7, #4]
- 8001eba:	e00f      	b.n	8001edc <Update_State_3_Left+0x2c>
-        for (int y = 15; y >=0; y--) {
- 8001ebc:	230f      	movs	r3, #15
- 8001ebe:	603b      	str	r3, [r7, #0]
- 8001ec0:	e006      	b.n	8001ed0 <Update_State_3_Left+0x20>
-            move_particle(x, y);
- 8001ec2:	6839      	ldr	r1, [r7, #0]
- 8001ec4:	6878      	ldr	r0, [r7, #4]
- 8001ec6:	f7ff fbd9 	bl	800167c <move_particle>
-        for (int y = 15; y >=0; y--) {
- 8001eca:	683b      	ldr	r3, [r7, #0]
- 8001ecc:	3b01      	subs	r3, #1
- 8001ece:	603b      	str	r3, [r7, #0]
- 8001ed0:	683b      	ldr	r3, [r7, #0]
- 8001ed2:	2b00      	cmp	r3, #0
- 8001ed4:	daf5      	bge.n	8001ec2 <Update_State_3_Left+0x12>
-    for (int x = 15; x >=0; x--) {
- 8001ed6:	687b      	ldr	r3, [r7, #4]
- 8001ed8:	3b01      	subs	r3, #1
- 8001eda:	607b      	str	r3, [r7, #4]
- 8001edc:	687b      	ldr	r3, [r7, #4]
- 8001ede:	2b00      	cmp	r3, #0
- 8001ee0:	daec      	bge.n	8001ebc <Update_State_3_Left+0xc>
-        }
-    }
-}
- 8001ee2:	bf00      	nop
- 8001ee4:	bf00      	nop
- 8001ee6:	3708      	adds	r7, #8
- 8001ee8:	46bd      	mov	sp, r7
- 8001eea:	bd80      	pop	{r7, pc}
-
-08001eec <Update_World>:
+08001e0c <Update_World>:
 
 //Choose the logic depends on state
 void Update_World(int state) {
- 8001eec:	b580      	push	{r7, lr}
- 8001eee:	b082      	sub	sp, #8
- 8001ef0:	af00      	add	r7, sp, #0
- 8001ef2:	6078      	str	r0, [r7, #4]
+ 8001e0c:	b580      	push	{r7, lr}
+ 8001e0e:	b082      	sub	sp, #8
+ 8001e10:	af00      	add	r7, sp, #0
+ 8001e12:	6078      	str	r0, [r7, #4]
     switch (state) {
- 8001ef4:	687b      	ldr	r3, [r7, #4]
- 8001ef6:	2b03      	cmp	r3, #3
- 8001ef8:	d816      	bhi.n	8001f28 <Update_World+0x3c>
- 8001efa:	a201      	add	r2, pc, #4	@ (adr r2, 8001f00 <Update_World+0x14>)
- 8001efc:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
- 8001f00:	08001f11 	.word	0x08001f11
- 8001f04:	08001f17 	.word	0x08001f17
- 8001f08:	08001f1d 	.word	0x08001f1d
- 8001f0c:	08001f23 	.word	0x08001f23
+ 8001e14:	687b      	ldr	r3, [r7, #4]
+ 8001e16:	2b03      	cmp	r3, #3
+ 8001e18:	d816      	bhi.n	8001e48 <Update_World+0x3c>
+ 8001e1a:	a201      	add	r2, pc, #4	@ (adr r2, 8001e20 <Update_World+0x14>)
+ 8001e1c:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+ 8001e20:	08001e31 	.word	0x08001e31
+ 8001e24:	08001e37 	.word	0x08001e37
+ 8001e28:	08001e3d 	.word	0x08001e3d
+ 8001e2c:	08001e43 	.word	0x08001e43
         case 0:
             Update_State_0_Down();
- 8001f10:	f7ff ff48 	bl	8001da4 <Update_State_0_Down>
+ 8001e30:	f7ff ff48 	bl	8001cc4 <Update_State_0_Down>
             break;
- 8001f14:	e00b      	b.n	8001f2e <Update_World+0x42>
+ 8001e34:	e00b      	b.n	8001e4e <Update_World+0x42>
         case 1:
             Update_State_1_Right();
- 8001f16:	f7ff ffad 	bl	8001e74 <Update_State_1_Right>
+ 8001e36:	f7ff ffad 	bl	8001d94 <Update_State_1_Right>
             break;
- 8001f1a:	e008      	b.n	8001f2e <Update_World+0x42>
+ 8001e3a:	e008      	b.n	8001e4e <Update_World+0x42>
         case 2:
             Update_State_2_Up();
- 8001f1c:	f7ff ff76 	bl	8001e0c <Update_State_2_Up>
+ 8001e3c:	f7ff ff76 	bl	8001d2c <Update_State_2_Up>
             break;
- 8001f20:	e005      	b.n	8001f2e <Update_World+0x42>
+ 8001e40:	e005      	b.n	8001e4e <Update_World+0x42>
         case 3:
             Update_State_3_Left();
- 8001f22:	f7ff ffc5 	bl	8001eb0 <Update_State_3_Left>
+ 8001e42:	f7ff ffc5 	bl	8001dd0 <Update_State_3_Left>
             break;
- 8001f26:	e002      	b.n	8001f2e <Update_World+0x42>
+ 8001e46:	e002      	b.n	8001e4e <Update_World+0x42>
         default:
             Update_State_0_Down();
- 8001f28:	f7ff ff3c 	bl	8001da4 <Update_State_0_Down>
+ 8001e48:	f7ff ff3c 	bl	8001cc4 <Update_State_0_Down>
             break;
- 8001f2c:	bf00      	nop
+ 8001e4c:	bf00      	nop
     }
 }
- 8001f2e:	bf00      	nop
- 8001f30:	3708      	adds	r7, #8
- 8001f32:	46bd      	mov	sp, r7
- 8001f34:	bd80      	pop	{r7, pc}
- 8001f36:	bf00      	nop
+ 8001e4e:	bf00      	nop
+ 8001e50:	3708      	adds	r7, #8
+ 8001e52:	46bd      	mov	sp, r7
+ 8001e54:	bd80      	pop	{r7, pc}
+ 8001e56:	bf00      	nop
+
+08001e58 <pack_data>:
+
+
+/*---This function will take the data from world and then latch it into
+ *  1 byte which contains the state of every led in that row-------------*/
+
+void pack_data(void){
+ 8001e58:	b480      	push	{r7}
+ 8001e5a:	b085      	sub	sp, #20
+ 8001e5c:	af00      	add	r7, sp, #0
+	for(int i=0; i<16; i++) display_buffer[i]=0;
+ 8001e5e:	2300      	movs	r3, #0
+ 8001e60:	60fb      	str	r3, [r7, #12]
+ 8001e62:	e007      	b.n	8001e74 <pack_data+0x1c>
+ 8001e64:	4a23      	ldr	r2, [pc, #140]	@ (8001ef4 <pack_data+0x9c>)
+ 8001e66:	68fb      	ldr	r3, [r7, #12]
+ 8001e68:	4413      	add	r3, r2
+ 8001e6a:	2200      	movs	r2, #0
+ 8001e6c:	701a      	strb	r2, [r3, #0]
+ 8001e6e:	68fb      	ldr	r3, [r7, #12]
+ 8001e70:	3301      	adds	r3, #1
+ 8001e72:	60fb      	str	r3, [r7, #12]
+ 8001e74:	68fb      	ldr	r3, [r7, #12]
+ 8001e76:	2b0f      	cmp	r3, #15
+ 8001e78:	ddf4      	ble.n	8001e64 <pack_data+0xc>
+
+	for(int y=0; y<16; y++){
+ 8001e7a:	2300      	movs	r3, #0
+ 8001e7c:	60bb      	str	r3, [r7, #8]
+ 8001e7e:	e02f      	b.n	8001ee0 <pack_data+0x88>
+		int col=(y<8)?8:0;
+ 8001e80:	68bb      	ldr	r3, [r7, #8]
+ 8001e82:	2b07      	cmp	r3, #7
+ 8001e84:	dc01      	bgt.n	8001e8a <pack_data+0x32>
+ 8001e86:	2308      	movs	r3, #8
+ 8001e88:	e000      	b.n	8001e8c <pack_data+0x34>
+ 8001e8a:	2300      	movs	r3, #0
+ 8001e8c:	603b      	str	r3, [r7, #0]
+		for (int x=0; x<8; x++){
+ 8001e8e:	2300      	movs	r3, #0
+ 8001e90:	607b      	str	r3, [r7, #4]
+ 8001e92:	e01f      	b.n	8001ed4 <pack_data+0x7c>
+			if (world[col+x][y]==1){
+ 8001e94:	683a      	ldr	r2, [r7, #0]
+ 8001e96:	687b      	ldr	r3, [r7, #4]
+ 8001e98:	4413      	add	r3, r2
+ 8001e9a:	4a17      	ldr	r2, [pc, #92]	@ (8001ef8 <pack_data+0xa0>)
+ 8001e9c:	011b      	lsls	r3, r3, #4
+ 8001e9e:	441a      	add	r2, r3
+ 8001ea0:	68bb      	ldr	r3, [r7, #8]
+ 8001ea2:	4413      	add	r3, r2
+ 8001ea4:	781b      	ldrb	r3, [r3, #0]
+ 8001ea6:	2b01      	cmp	r3, #1
+ 8001ea8:	d111      	bne.n	8001ece <pack_data+0x76>
+				display_buffer[y]|=(1<<(x));
+ 8001eaa:	4a12      	ldr	r2, [pc, #72]	@ (8001ef4 <pack_data+0x9c>)
+ 8001eac:	68bb      	ldr	r3, [r7, #8]
+ 8001eae:	4413      	add	r3, r2
+ 8001eb0:	781b      	ldrb	r3, [r3, #0]
+ 8001eb2:	b25a      	sxtb	r2, r3
+ 8001eb4:	2101      	movs	r1, #1
+ 8001eb6:	687b      	ldr	r3, [r7, #4]
+ 8001eb8:	fa01 f303 	lsl.w	r3, r1, r3
+ 8001ebc:	b25b      	sxtb	r3, r3
+ 8001ebe:	4313      	orrs	r3, r2
+ 8001ec0:	b25b      	sxtb	r3, r3
+ 8001ec2:	b2d9      	uxtb	r1, r3
+ 8001ec4:	4a0b      	ldr	r2, [pc, #44]	@ (8001ef4 <pack_data+0x9c>)
+ 8001ec6:	68bb      	ldr	r3, [r7, #8]
+ 8001ec8:	4413      	add	r3, r2
+ 8001eca:	460a      	mov	r2, r1
+ 8001ecc:	701a      	strb	r2, [r3, #0]
+		for (int x=0; x<8; x++){
+ 8001ece:	687b      	ldr	r3, [r7, #4]
+ 8001ed0:	3301      	adds	r3, #1
+ 8001ed2:	607b      	str	r3, [r7, #4]
+ 8001ed4:	687b      	ldr	r3, [r7, #4]
+ 8001ed6:	2b07      	cmp	r3, #7
+ 8001ed8:	dddc      	ble.n	8001e94 <pack_data+0x3c>
+	for(int y=0; y<16; y++){
+ 8001eda:	68bb      	ldr	r3, [r7, #8]
+ 8001edc:	3301      	adds	r3, #1
+ 8001ede:	60bb      	str	r3, [r7, #8]
+ 8001ee0:	68bb      	ldr	r3, [r7, #8]
+ 8001ee2:	2b0f      	cmp	r3, #15
+ 8001ee4:	ddcc      	ble.n	8001e80 <pack_data+0x28>
+			}
+		}
+	}
+
+}
+ 8001ee6:	bf00      	nop
+ 8001ee8:	bf00      	nop
+ 8001eea:	3714      	adds	r7, #20
+ 8001eec:	46bd      	mov	sp, r7
+ 8001eee:	bc80      	pop	{r7}
+ 8001ef0:	4770      	bx	lr
+ 8001ef2:	bf00      	nop
+ 8001ef4:	20000168 	.word	0x20000168
+ 8001ef8:	20000178 	.word	0x20000178
+
+08001efc <flush_to_max7219>:
+
+/*----------This function will take the data we have packed in the previous func
+ *  to latch it out MAX7219-------------*/
+
+void flush_to_max7219(void){
+ 8001efc:	b580      	push	{r7, lr}
+ 8001efe:	b082      	sub	sp, #8
+ 8001f00:	af00      	add	r7, sp, #0
+	for(int row=0; row<16; row++){
+ 8001f02:	2300      	movs	r3, #0
+ 8001f04:	607b      	str	r3, [r7, #4]
+ 8001f06:	e00c      	b.n	8001f22 <flush_to_max7219+0x26>
+		max_write(row+1, display_buffer[row]);
+ 8001f08:	687b      	ldr	r3, [r7, #4]
+ 8001f0a:	1c5a      	adds	r2, r3, #1
+ 8001f0c:	4909      	ldr	r1, [pc, #36]	@ (8001f34 <flush_to_max7219+0x38>)
+ 8001f0e:	687b      	ldr	r3, [r7, #4]
+ 8001f10:	440b      	add	r3, r1
+ 8001f12:	781b      	ldrb	r3, [r3, #0]
+ 8001f14:	4619      	mov	r1, r3
+ 8001f16:	4610      	mov	r0, r2
+ 8001f18:	f7ff f8c2 	bl	80010a0 <max_write>
+	for(int row=0; row<16; row++){
+ 8001f1c:	687b      	ldr	r3, [r7, #4]
+ 8001f1e:	3301      	adds	r3, #1
+ 8001f20:	607b      	str	r3, [r7, #4]
+ 8001f22:	687b      	ldr	r3, [r7, #4]
+ 8001f24:	2b0f      	cmp	r3, #15
+ 8001f26:	ddef      	ble.n	8001f08 <flush_to_max7219+0xc>
+	}
+}
+ 8001f28:	bf00      	nop
+ 8001f2a:	bf00      	nop
+ 8001f2c:	3708      	adds	r7, #8
+ 8001f2e:	46bd      	mov	sp, r7
+ 8001f30:	bd80      	pop	{r7, pc}
+ 8001f32:	bf00      	nop
+ 8001f34:	20000168 	.word	0x20000168
 
 08001f38 <main>:
 /**
@@ -3932,7 +3931,7 @@ int main(void)
  8001fea:	6178      	str	r0, [r7, #20]
 	            set_gravity_by_state(current_state);
  8001fec:	6978      	ldr	r0, [r7, #20]
- 8001fee:	f7ff fad5 	bl	800159c <set_gravity_by_state>
+ 8001fee:	f7ff fa65 	bl	80014bc <set_gravity_by_state>
 
 	            last_mpu_time = current_time;
  8001ff2:	687b      	ldr	r3, [r7, #4]
@@ -3949,11 +3948,11 @@ int main(void)
 
 	            Update_World(current_state);
  8002000:	6978      	ldr	r0, [r7, #20]
- 8002002:	f7ff ff73 	bl	8001eec <Update_World>
+ 8002002:	f7ff ff03 	bl	8001e0c <Update_World>
 	            pack_data();
- 8002006:	f7ff f969 	bl	80012dc <pack_data>
+ 8002006:	f7ff ff27 	bl	8001e58 <pack_data>
 	            flush_to_max7219();
- 800200a:	f7ff f9b9 	bl	8001380 <flush_to_max7219>
+ 800200a:	f7ff ff77 	bl	8001efc <flush_to_max7219>
 
 	            last_physics_time = current_time;
  800200e:	687b      	ldr	r3, [r7, #4]

@@ -2881,64 +2881,64 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .text.source_sink
                 0x08001250       0x8c ./Core/Src/main.o
                 0x08001250                source_sink
- .text.pack_data
-                0x080012dc       0xa4 ./Core/Src/main.o
-                0x080012dc                pack_data
- .text.flush_to_max7219
-                0x08001380       0x3c ./Core/Src/main.o
-                0x08001380                flush_to_max7219
  .text.check_inbound
-                0x080013bc       0x6a ./Core/Src/main.o
-                0x080013bc                check_inbound
+                0x080012dc       0x6a ./Core/Src/main.o
+                0x080012dc                check_inbound
  .text.check_inbound_state0upper
-                0x08001426       0x4e ./Core/Src/main.o
-                0x08001426                check_inbound_state0upper
+                0x08001346       0x4e ./Core/Src/main.o
+                0x08001346                check_inbound_state0upper
  .text.check_inbound_state0below
-                0x08001474       0x4e ./Core/Src/main.o
-                0x08001474                check_inbound_state0below
- *fill*         0x080014c2        0x2 
+                0x08001394       0x4e ./Core/Src/main.o
+                0x08001394                check_inbound_state0below
+ *fill*         0x080013e2        0x2 
  .text.can_move_to
-                0x080014c4       0x48 ./Core/Src/main.o
-                0x080014c4                can_move_to
+                0x080013e4       0x48 ./Core/Src/main.o
+                0x080013e4                can_move_to
  .text.can_move_to_state0upper
-                0x0800150c       0x48 ./Core/Src/main.o
-                0x0800150c                can_move_to_state0upper
+                0x0800142c       0x48 ./Core/Src/main.o
+                0x0800142c                can_move_to_state0upper
  .text.can_move_to_state0below
-                0x08001554       0x48 ./Core/Src/main.o
-                0x08001554                can_move_to_state0below
+                0x08001474       0x48 ./Core/Src/main.o
+                0x08001474                can_move_to_state0below
  .text.set_gravity_by_state
-                0x0800159c       0xe0 ./Core/Src/main.o
-                0x0800159c                set_gravity_by_state
+                0x080014bc       0xe0 ./Core/Src/main.o
+                0x080014bc                set_gravity_by_state
  .text.move_particle
-                0x0800167c      0x190 ./Core/Src/main.o
-                0x0800167c                move_particle
+                0x0800159c      0x190 ./Core/Src/main.o
+                0x0800159c                move_particle
  .text.move_particle_state0upper
-                0x0800180c      0x13c ./Core/Src/main.o
-                0x0800180c                move_particle_state0upper
+                0x0800172c      0x13c ./Core/Src/main.o
+                0x0800172c                move_particle_state0upper
  .text.move_particle_state2upper
-                0x08001948      0x13c ./Core/Src/main.o
-                0x08001948                move_particle_state2upper
+                0x08001868      0x13c ./Core/Src/main.o
+                0x08001868                move_particle_state2upper
  .text.move_particle_state0below
-                0x08001a84      0x190 ./Core/Src/main.o
-                0x08001a84                move_particle_state0below
+                0x080019a4      0x190 ./Core/Src/main.o
+                0x080019a4                move_particle_state0below
  .text.move_particle_state2below
-                0x08001c14      0x190 ./Core/Src/main.o
-                0x08001c14                move_particle_state2below
+                0x08001b34      0x190 ./Core/Src/main.o
+                0x08001b34                move_particle_state2below
  .text.Update_State_0_Down
-                0x08001da4       0x68 ./Core/Src/main.o
-                0x08001da4                Update_State_0_Down
+                0x08001cc4       0x68 ./Core/Src/main.o
+                0x08001cc4                Update_State_0_Down
  .text.Update_State_2_Up
-                0x08001e0c       0x68 ./Core/Src/main.o
-                0x08001e0c                Update_State_2_Up
+                0x08001d2c       0x68 ./Core/Src/main.o
+                0x08001d2c                Update_State_2_Up
  .text.Update_State_1_Right
-                0x08001e74       0x3c ./Core/Src/main.o
-                0x08001e74                Update_State_1_Right
+                0x08001d94       0x3c ./Core/Src/main.o
+                0x08001d94                Update_State_1_Right
  .text.Update_State_3_Left
-                0x08001eb0       0x3c ./Core/Src/main.o
-                0x08001eb0                Update_State_3_Left
+                0x08001dd0       0x3c ./Core/Src/main.o
+                0x08001dd0                Update_State_3_Left
  .text.Update_World
-                0x08001eec       0x4c ./Core/Src/main.o
-                0x08001eec                Update_World
+                0x08001e0c       0x4c ./Core/Src/main.o
+                0x08001e0c                Update_World
+ .text.pack_data
+                0x08001e58       0xa4 ./Core/Src/main.o
+                0x08001e58                pack_data
+ .text.flush_to_max7219
+                0x08001efc       0x3c ./Core/Src/main.o
+                0x08001efc                flush_to_max7219
  .text.main     0x08001f38      0x108 ./Core/Src/main.o
                 0x08001f38                main
  .text.SystemClock_Config
@@ -3692,24 +3692,24 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_info    0x00007c68      0x7d5 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .debug_info    0x0000843d     0x142d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
 
-.debug_abbrev   0x00000000     0x1e7f
+.debug_abbrev   0x00000000     0x1e6a
  .debug_abbrev  0x00000000      0x13f ./Core/Src/gpio.o
  .debug_abbrev  0x0000013f      0x1de ./Core/Src/i2c.o
- .debug_abbrev  0x0000031d      0x3a5 ./Core/Src/main.o
- .debug_abbrev  0x000006c2      0x220 ./Core/Src/mpu6051.o
- .debug_abbrev  0x000008e2      0x1e7 ./Core/Src/spi.o
- .debug_abbrev  0x00000ac9       0xdb ./Core/Src/stm32f1xx_hal_msp.o
- .debug_abbrev  0x00000ba4       0x73 ./Core/Src/stm32f1xx_it.o
- .debug_abbrev  0x00000c17      0x1b6 ./Core/Src/syscalls.o
- .debug_abbrev  0x00000dcd       0xbc ./Core/Src/sysmem.o
- .debug_abbrev  0x00000e89      0x13f ./Core/Src/system_stm32f1xx.o
- .debug_abbrev  0x00000fc8       0x24 ./Core/Startup/startup_stm32f103c8tx.o
- .debug_abbrev  0x00000fec      0x201 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
- .debug_abbrev  0x000011ed      0x2f8 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
- .debug_abbrev  0x000014e5      0x1ca ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
- .debug_abbrev  0x000016af      0x2a3 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o
- .debug_abbrev  0x00001952      0x2b3 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
- .debug_abbrev  0x00001c05      0x27a ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
+ .debug_abbrev  0x0000031d      0x390 ./Core/Src/main.o
+ .debug_abbrev  0x000006ad      0x220 ./Core/Src/mpu6051.o
+ .debug_abbrev  0x000008cd      0x1e7 ./Core/Src/spi.o
+ .debug_abbrev  0x00000ab4       0xdb ./Core/Src/stm32f1xx_hal_msp.o
+ .debug_abbrev  0x00000b8f       0x73 ./Core/Src/stm32f1xx_it.o
+ .debug_abbrev  0x00000c02      0x1b6 ./Core/Src/syscalls.o
+ .debug_abbrev  0x00000db8       0xbc ./Core/Src/sysmem.o
+ .debug_abbrev  0x00000e74      0x13f ./Core/Src/system_stm32f1xx.o
+ .debug_abbrev  0x00000fb3       0x24 ./Core/Startup/startup_stm32f103c8tx.o
+ .debug_abbrev  0x00000fd7      0x201 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+ .debug_abbrev  0x000011d8      0x2f8 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
+ .debug_abbrev  0x000014d0      0x1ca ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_abbrev  0x0000169a      0x2a3 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o
+ .debug_abbrev  0x0000193d      0x2b3 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_abbrev  0x00001bf0      0x27a ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
 
 .debug_aranges  0x00000000      0xa90
  .debug_aranges
