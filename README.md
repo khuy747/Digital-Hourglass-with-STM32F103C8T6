@@ -22,8 +22,9 @@ This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded wit
 > My project has the their own way to display MPU6050 so make sure to change the direction in the `int get_orientation_state(double Ay, double Ax)` by measuring your own status
 > 
 > Another thing to take consideration is the MPU address in **mpu6051.c** file in the `if (check == 112) // 0x68 will be returned by the sensor if everything goes well
-` line. If you use the authentic MPU6050, you should change 112 to 0x68. (And if not, check the   
-
+` line. If you use the authentic MPU6050, you should change 112 to 0x68.
+>
+> It is recommended to use a battery with a protection or a charging circuit has the protection.
 ## How it works 
 
 ### First: I have to give you the logic of my core algorithm 
@@ -36,7 +37,7 @@ If you have seen the sand falling algorithm my algorithm is like that. The code 
 Then when it meets other particle it will have 2 option to go left or right so the coordinate will be (x-1,y-1) or (x+1,y-1). Else it will stay the 
 
 ### Second: How i arrange the matrices in the code 
-This project arrange the matrices with the right picture order. So to make the calculation easier i rotate the matrices 45 degrees counter clockwise and have the left picture. And the gravity now according to the order has the vector (1,-1) so it will flow from high to low . Follow that logic the gravity in the state 90 degrees is (1,1) and so on. 
+This project arrange the matrices with the right picture order. So to make the calculation easier i rotate the matrices 45 degrees counter clockwise and have the left picture. And the gravity now according to the order has the vector (1,-1) so it will flow from high to low and at (x,y) will have the new coordinate is (x+1,y-1) . Follow that logic the gravity in the state 90 degrees is (1,1) and so on. 
 
 ![Image](principle_matrix.jfif)
 
