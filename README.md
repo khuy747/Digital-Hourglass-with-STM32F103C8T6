@@ -22,7 +22,7 @@ This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded wit
 > My project has the their own way to display MPU6050 so make sure to change the direction in the `int get_orientation_state(double Ay, double Ax)` by measuring your own status
 > 
 > Another thing to take consideration is the MPU address in **mpu6051.c** file in the `if (check == 112) // 0x68 will be returned by the sensor if everything goes well
-` line. If you use the authentic MPU6050, you should change 112 to 0x68.
+` line. If you use the authentic MPU6050, you should change 112 to 104 (which is0x68 which is the value of WHO_AM_I register). And if you use the clone one, use debug mode to check the value of check by placing the breakpoint right after READ command and open the variable to see which value the debugger return to change. 
 >
 > It is recommended to use a battery with a protection or a charging circuit has the protection.
 ## How it works 
