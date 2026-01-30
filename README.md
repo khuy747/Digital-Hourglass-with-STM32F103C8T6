@@ -22,7 +22,7 @@ This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded wit
 > My project has the their own way to display MPU6050 so make sure to change the direction in the `int get_orientation_state(double Ay, double Ax)` by measuring your own status
 > 
 > Another thing to take consideration is the MPU address in **mpu6051.c** file in the `if (check == 112) // 0x68 will be returned by the sensor if everything goes well
-` line. If you use the authentic MPU6050, you should change 112 to 104 (which is0x68 which is the value of WHO_AM_I register). And if you use the clone one like me, use debug and place the breakpoint at the line i mentioned to and open the variable table to check value of check 
+` line. If you use the authentic MPU6050, you should change 112 to 104 (which is0x68 which is the value of WHO_AM_I register). And if you use the clone one like me, use debug and place the breakpoint at the line i mentioned to and open the variable table to check value of check ![check](check_mpu.jfif =100x20)
 >
 > It is recommended to use a battery with a protection or a charging circuit has the protection.
 ## How it works 
@@ -30,7 +30,7 @@ This is the project using the MPU6050 to control 2 8x8 LED Matrices Cascaded wit
 ### First: I have to give you the logic of my core algorithm 
 
 If you have seen the sand falling algorithm my algorithm is like that. The code scans from low to high and check if there is a particle 
-1. If there is a particle at coordinate (x,y) the particle move to (x,y-1) if there is no particle below like this picture
+1. If there is a particle at coordinate (x,y) the particle move to (x,y-1) if there is no particle below like this picture (ref: webp)
 
 ![sand_simulation](sand_simulation.webp)
 
