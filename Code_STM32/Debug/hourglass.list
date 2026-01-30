@@ -39,13 +39,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   0000dc7b  00000000  00000000  0002d0f5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00086796  00000000  00000000  0003ad70  2**0
+ 18 .debug_str    00086791  00000000  00000000  0003ad70  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000c1506  2**0
+ 19 .comment      00000043  00000000  00000000  000c1501  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000374c  00000000  00000000  000c154c  2**2
+ 20 .debug_frame  0000374c  00000000  00000000  000c1544  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000005f  00000000  00000000  000c4c98  2**0
+ 21 .debug_line_str 0000005a  00000000  00000000  000c4c90  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -4104,20 +4104,20 @@ __STATIC_FORCEINLINE void __disable_irq(void)
  80020cc:	e7fd      	b.n	80020ca <Error_Handler+0x8>
 
 080020ce <MPU6050_Init>:
-    .Q_bias = 0.003f,
     .R_measure = 0.03f,
 };
 
-uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx)
+uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx) //Init nen phai su dung write vao cac thanh ghi de bat cac chuc nang cua no
+
 {
  80020ce:	b580      	push	{r7, lr}
  80020d0:	b088      	sub	sp, #32
  80020d2:	af04      	add	r7, sp, #16
  80020d4:	6078      	str	r0, [r7, #4]
-    uint8_t check;
     uint8_t Data;
 
     // check device ID WHO_AM_I--> If right --> send data!
+    //Cấu trúc: I2Cx, address của ngoại vi , thanh ghi nào, hi2c, uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size, uint32_t Timeout)
 
     HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, WHO_AM_I_REG, 1, &check, 1, i2c_timeout);
  80020d6:	2364      	movs	r3, #100	@ 0x64
@@ -4132,9 +4132,9 @@ uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx)
  80020ea:	6878      	ldr	r0, [r7, #4]
  80020ec:	f001 fa84 	bl	80035f8 <HAL_I2C_Mem_Read>
 
-    if (check == 112) // 0x68 will be returned by the sensor if everything goes well
+    if (check == 104) // 0x68 will be returned by the sensor if everything goes well
  80020f0:	7bfb      	ldrb	r3, [r7, #15]
- 80020f2:	2b70      	cmp	r3, #112	@ 0x70
+ 80020f2:	2b68      	cmp	r3, #104	@ 0x68
  80020f4:	d13d      	bne.n	8002172 <MPU6050_Init+0xa4>
     {
         // power management register 0X6B we should write all 0's to wake the sensor up
@@ -4173,7 +4173,7 @@ uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx)
 
         // Set accelerometer configuration in ACCEL_CONFIG Register
         // XA_ST=0,YA_ST=0,ZA_ST=0, FS_SEL=0 -> � 2g
-        Data = 0x00;
+        Data = 0x00; //+- 2g sau đó chia số lấy được từ đây cho 16834 là được giá trị của gia tốc
  8002132:	2300      	movs	r3, #0
  8002134:	73bb      	strb	r3, [r7, #14]
         HAL_I2C_Mem_Write(I2Cx, MPU6050_ADDR, ACCEL_CONFIG_REG, 1, &Data, 1, i2c_timeout);

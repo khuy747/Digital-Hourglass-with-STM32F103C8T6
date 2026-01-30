@@ -60,8 +60,8 @@ all: main-build
 main-build: hourglass.elf secondary-outputs
 
 # Tool invocations
-hourglass.elf hourglass.map: $(OBJS) $(USER_OBJS) C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\hourglass\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "hourglass.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\hourglass\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hourglass.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+hourglass.elf hourglass.map: $(OBJS) $(USER_OBJS) C:\Users\KinQuy\Desktop\PIF_PRJT\Code_STM32\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "hourglass.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\KinQuy\Desktop\PIF_PRJT\Code_STM32\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hourglass.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

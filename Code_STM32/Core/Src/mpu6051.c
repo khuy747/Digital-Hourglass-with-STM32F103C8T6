@@ -42,11 +42,11 @@
 #define ACCEL_CONFIG_REG 0x1C
 #define ACCEL_XOUT_H_REG 0x3B
 #define TEMP_OUT_H_REG 0x41
-#define GYRO_CONFIG_REG 0x1B
+#define GYRO_CONFIG_REG 0x1B //Xài bit 3,4 để set độ nhạy
 #define GYRO_XOUT_H_REG 0x43
 
 // Setup MPU6050
-#define MPU6050_ADDR 0xD0
+#define MPU6050_ADDR 0xD0 //Because I2C require 7bit for address and 1bit for R/W so we can shift the data to the left by 1 to not break the address
 const uint16_t i2c_timeout = 100;
 const double Accel_Z_corrector = 14418.0;
 
@@ -75,16 +75,18 @@ Kalman_t KalmanY = {
     .R_measure = 0.03f,
 };
 
-uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx)
+uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx) //Init nen phai su dung write vao cac thanh ghi de bat cac chuc nang cua no
+
 {
     uint8_t check;
     uint8_t Data;
 
     // check device ID WHO_AM_I--> If right --> send data!
+    //Cấu trúc: I2Cx, address của ngoại vi , thanh ghi nào, hi2c, uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size, uint32_t Timeout)
 
     HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, WHO_AM_I_REG, 1, &check, 1, i2c_timeout);
 
-    if (check == 112) // 0x68 will be returned by the sensor if everything goes well
+    if (check == 104) // 0x68 will be returned by the sensor if everything goes well
     {
         // power management register 0X6B we should write all 0's to wake the sensor up
         Data = 0;
@@ -96,7 +98,7 @@ uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx)
 
         // Set accelerometer configuration in ACCEL_CONFIG Register
         // XA_ST=0,YA_ST=0,ZA_ST=0, FS_SEL=0 -> � 2g
-        Data = 0x00;
+        Data = 0x00; //+- 2g sau đó chia số lấy được từ đây cho 16834 là được giá trị của gia tốc
         HAL_I2C_Mem_Write(I2Cx, MPU6050_ADDR, ACCEL_CONFIG_REG, 1, &Data, 1, i2c_timeout);
 
         // Set Gyroscopic configuration in GYRO_CONFIG Register
@@ -108,6 +110,7 @@ uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx)
     return 1;
 }
 
+
 void MPU6050_Read_Accel(I2C_HandleTypeDef *I2Cx, MPU6050_t *DataStruct)
 {
     uint8_t Rec_Data[6];
@@ -116,7 +119,7 @@ void MPU6050_Read_Accel(I2C_HandleTypeDef *I2Cx, MPU6050_t *DataStruct)
 
     HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 6, i2c_timeout);
 
-    DataStruct->Accel_X_RAW = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
+    DataStruct->Accel_X_RAW = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);	//Bởi vì khi giao tiếp thì có ACCEL_XOUT_H và _L. Mà L là LSB nên ta dịch trái 8bit xong hợp lại là được dữ liệu raw
     DataStruct->Accel_Y_RAW = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
     DataStruct->Accel_Z_RAW = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
  //Vào datastruct bốc cái accel_x ra để gán giá trị
